@@ -7,8 +7,8 @@
     var cfg = {
         ssl: true,
         port: 12345,
-        ssl_key: '../sadc-game-library-server/cert/ia.key',
-        ssl_cert: '../sadc-game-library-server/cert/ia.crt'
+        ssl_key: './cert/ia.key',
+        ssl_cert: './cert/ia.crt'
     };
 
     var httpServ = (cfg.ssl) ? require('https') : require('http');
