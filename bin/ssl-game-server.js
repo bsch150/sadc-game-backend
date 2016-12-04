@@ -1,47 +1,6 @@
 (function () {
     'use strict';
 
-    var fs = require('fs');
-
-    // you'll probably load configuration from config
-    var cfg = {
-        ssl: true,
-        port: 12345,
-        ssl_key: './cert/ia.key',
-        ssl_cert: './cert/ia.crt'
-    };
-
-    var httpServ = (cfg.ssl) ? require('https') : require('http');
-
-    var WebSocketServer = require('ws').Server;
-
-    var app = null;
-
-    // dummy request processing
-    var processRequest = function (req, res) {
-        res.writeHead(200);
-        res.end('All glory to WebSockets!\n');
-    };
-
-    if (cfg.ssl) {
-        console.log("Attempting to start server");
-        app = httpServ.createServer({
-
-            // providing server with  SSL key/cert
-            key: fs.readFileSync(cfg.ssl_key),
-            cert: fs.readFileSync(cfg.ssl_cert)
-
-        }, processRequest).listen(cfg.port);
-        console.log("Server listening on port: " + cfg.port);
-
-    } else {
-        app = httpServ.createServer(processRequest).listen(cfg.port);
-        console.log("Server listening on port: " + cfg.port);
-    }
-
-    // passing or reference to web server so WS would knew port and SSL capabilities
-    var wss = new WebSocketServer({server: app});
-
     wss.on('connection', function (wsConnect) {
         console.log("connection established with client!");
         var stusLoc = 0;
@@ -83,5 +42,6 @@
             }
         },1000/60)
     });
+    }
 
 }());
