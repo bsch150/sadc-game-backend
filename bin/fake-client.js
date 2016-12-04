@@ -13,6 +13,8 @@
             console.log("recieved message: " + event);
             if(event.includes("Games")){
                 socket.send("Choose:Pong");
+                socket.send("Choose:Pong");
+                socket.send("Choose:Pong");
             }
         })
     }
