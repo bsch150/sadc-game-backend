@@ -1,5 +1,6 @@
 function GameServer(){
     var fs = require('fs');
+    var gameList = require("./service/game-list.js");
     var cfg = {
         ssl: true,
         port: 12345,
@@ -12,6 +13,13 @@ function GameServer(){
     function reactToConnection(wsConnect){
         console.log("reacting to connection");
         wsConnect.send("welcome to the server");
+        wsConnect.send("Games:["+gameList.gameNames+"]");
+        wsConnect.on("message",function(message){
+            if(message.includes("Choose")){
+                var chosen = message.substring(message.indexOf(":") + 1,message.length);
+                console.log("chosen : " +  chosen);
+            }
+        })
     }
 
     function processRequest(req,res){
