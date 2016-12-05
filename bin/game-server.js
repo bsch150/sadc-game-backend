@@ -5,7 +5,7 @@ function GameServer(){
     var matchMaker = new MatchMaker();
     var cfg = {
         ssl: true,
-        port: 12345,
+        port: 443,
         ssl_key: './cert/ia.key',
         ssl_cert: './cert/ia.crt'
     };

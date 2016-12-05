@@ -6,6 +6,6 @@ function Match(socket, firstPlayer){
 
 Match.prototype.setSecondPlayer = function(otherPlayer){
     playerTwo = otherPlayer;
-}
+};
 
 module.exports = Match;

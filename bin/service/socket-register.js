@@ -1,10 +1,10 @@
 var Registry = {
     unregister: function(socket){
-        socket.off("message");
+        console.log("can't unregister now");
     },
     registerMessagePrefix: function(socket, messagePrefix, foo){
         this.unregister(socket);
-        socket.on("message",function(reponse){
+        socket.on("message",function(response){
            if(response.includes(messagePrefix)){
                foo(response);
            }
