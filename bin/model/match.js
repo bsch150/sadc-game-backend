@@ -4,7 +4,7 @@ function Match(socket, firstPlayer){
     this.playerTwo = null;
 }
 
-Match.prototype.setSecondPlayer(otherPlayer){
+Match.prototype.setSecondPlayer = function(otherPlayer){
     playerTwo = otherPlayer;
 }
 

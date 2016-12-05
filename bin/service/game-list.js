@@ -1,5 +1,6 @@
 var gameList = [
-    require("../sockets/pong-socket.js")
+    require("../sockets/pong-socket.js"),
+    require("../sockets/tron-socket.js")
 ];
 var gameNames = getNames();
 
@@ -12,7 +13,12 @@ function getNames(){
     return ret;
 }
 
+function getGamesListMessage(){
+    return "Games:["+gameNames+"]";
+}
+
 module.exports = {
     gameList: gameList,
-    gameNames: gameNames
+    gameNames: gameNames,
+    getGamesListMessage: getGamesListMessage
 };

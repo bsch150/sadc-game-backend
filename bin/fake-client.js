@@ -1,7 +1,7 @@
 (function(){
     var WebSocket = require('ws');
 
-    var port = 12345;
+    var port = 443;
     var local = "wss://localhost:"+port;
     var remote = "wss://45.33.28.57:"+port;
 
