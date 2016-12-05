@@ -12,4 +12,7 @@ function getNames(){
     return ret;
 }
 
-module.exports = {gameList,gameNames};
+module.exports = {
+    gameList: gameList,
+    gameNames: gameNames
+};
