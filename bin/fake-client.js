@@ -10,10 +10,11 @@
     function connect(){
         var socket = new WebSocket(address,{rejectUnauthorized:false});
         socket.onopen = function(){
-            socket.send("Username:test");
+            socket.send(JSON.stringify({msg:"username",username:"testUSer"}));
         };
         socket.on('message',function(event){
-            console.log("recieved message: " + event);
+            var jsonEvent = JSON.parse(event);
+            console.log("recieved message: " + jsonEvent.msg);
             if(event.includes("Games")){
                 socket.send("Choose:Pong");
                 socket.send("Choose:Pong");

@@ -13,7 +13,7 @@ function chooseGame(response){
 }
 
 function sendGames(socket,waitingQueue){
-    socket.send(buildGamesString(waitingQueue));
+    socket.send(JSON.stringify(buildGamesObject(waitingQueue)));
 }
 
 function countOpenGamesForName(name,waitingQueue){
@@ -26,24 +26,22 @@ function countOpenGamesForName(name,waitingQueue){
     return ret;
 }
 
-function buildGamesString(waitingQueue){
+function buildGamesObject(waitingQueue){
     var names = gamesInfo.gameNames;
-    var ret = "Games:[";
+    var list = [];
     names.forEach(function(name){
-        ret += name + "-" + countOpenGamesForName(name,waitingQueue)+",";
+        list.push({name:name,numLobbies:countOpenGamesForName(name,waitingQueue)});
     });
-    return ret + "]";
+    return {msg:"games",object: {games:list}};
 
 }
 
 MatchMaker.prototype.addConnection = function(socket){
     var users = this.connectedUsers;
-    console.log("adding connection");
     sendGames(socket,this.waitingQueue);
-    Registry.registerMessagePrefix(socket,"Username",function(username){
-        var user = new User(username,socket);
+    Registry.registerMessagePrefix(socket,"username",function(username){
+        var user = new User(username.object,socket);
         users.push(user);
-        console.log("connectedUsers: " + users);
     })
 };
 

@@ -14,7 +14,6 @@ function GameServer(){
 
     function reactToConnection(wsConnect){
         console.log("reacting to connection");
-        wsConnect.send("welcome to the server");
         matchMaker.addConnection(wsConnect);
         /*wsConnect.on("message",function(message){
             if(message.includes("Choose")){
