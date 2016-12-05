@@ -9,6 +9,9 @@
 
     function connect(){
         var socket = new WebSocket(address,{rejectUnauthorized:false});
+        socket.onopen = function(){
+            socket.send("Username:test");
+        };
         socket.on('message',function(event){
             console.log("recieved message: " + event);
             if(event.includes("Games")){

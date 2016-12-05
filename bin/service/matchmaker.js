@@ -1,9 +1,10 @@
 var Match = require("../model/match.js");
 var gamesInfo = require("./game-list.js");
 var Registry = require("./socket-register.js");
+var User = require("../model/user.js");
 
 function MatchMaker(){
-    this.connections  = [];
+    this.connectedUsers  = [];
     this.waitingQueue = [];
 }
 
@@ -13,7 +14,6 @@ function chooseGame(response){
 
 function sendGames(socket,waitingQueue){
     socket.send(buildGamesString(waitingQueue));
-    Registry.registerMessagePrefix(socket,"Choose",chooseGame)
 }
 
 function countOpenGamesForName(name,waitingQueue){
@@ -37,10 +37,14 @@ function buildGamesString(waitingQueue){
 }
 
 MatchMaker.prototype.addConnection = function(socket){
+    var users = this.connectedUsers;
     console.log("adding connection");
-    this.connections.push(socket);
     sendGames(socket,this.waitingQueue);
-
+    Registry.registerMessagePrefix(socket,"Username",function(username){
+        var user = new User(username,socket);
+        users.push(user);
+        console.log("connectedUsers: " + users);
+    })
 };
 
 module.exports = MatchMaker;
