@@ -4,18 +4,12 @@ function GameServer(){
     var gameList = require("./service/game-list.js");
     var config = require('./config');
     var matchMaker = new MatchMaker();
+    var User = require("./model/user.js");
 
     var httpServ = (config.sslEnabled) ? require('https') : require('http');
 
     function reactToConnection(wsConnect){
-        console.log("reacting to connection");
-        matchMaker.addConnection(wsConnect);
-        /*wsConnect.on("message",function(message){
-            if(message.includes("Choose")){
-                var chosen = message.substring(message.indexOf(":") + 1,message.length);
-                console.log("chosen : " +  chosen);
-            }
-        })*/
+        matchMaker.addConnection(new User(wsConnect));
     }
 
     function processRequest(req,res){
@@ -51,10 +45,5 @@ function GameServer(){
     }
     init();
 }
-
-GameServer.prototype.test = function(){
-    console.log("test");
-};
-
 
 module.exports = GameServer;

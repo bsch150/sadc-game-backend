@@ -10,17 +10,9 @@
     function connect(){
         var socket = new WebSocket(address,{rejectUnauthorized:false});
         socket.onopen = function(){
-            socket.send(JSON.stringify({msg:"username",username:"testUSer"}));
+            socket.send(JSON.stringify({msg:"username",object:"testUSer"}));
+            socket.send(JSON.stringify({msg:"username",object:"testUSer"}));
         };
-        socket.on('message',function(event){
-            var jsonEvent = JSON.parse(event);
-            console.log("recieved message: " + jsonEvent.msg);
-            if(event.includes("Games")){
-                socket.send("Choose:Pong");
-                socket.send("Choose:Pong");
-                socket.send("Choose:Pong");
-            }
-        })
     }
     connect();
 }());
