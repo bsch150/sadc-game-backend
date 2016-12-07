@@ -3,16 +3,16 @@ var gamesInfo = require("./game-list.js");
 var Registry = require("./socket-register.js");
 var User = require("../model/user.js");
 
-function MatchMaker(){
-    this.connectedUsers  = [];
+function MatchMaker() {
+    this.connectedUsers = [];
     this.waitingQueue = [];
 }
 
-function chooseGame(response){
+function chooseGame(response) {
     console.log("choose game called with " + response);
 }
 
-function sendGames(socket,waitingQueue){
+function sendGames(socket, waitingQueue) {
     var before = buildGamesObject(waitingQueue);
     console.log("before: " + before);
     var obj = JSON.stringify(buildGamesObject(waitingQueue));
@@ -20,27 +20,27 @@ function sendGames(socket,waitingQueue){
     socket.send(obj);
 }
 
-function countOpenGamesForName(name,waitingQueue){
+function countOpenGamesForName(name, waitingQueue) {
     var ret = 0;
-    waitingQueue.forEach(function(elem){
-        if(elem.getGameType() === name){
+    waitingQueue.forEach(function (elem) {
+        if (elem.getGameType() === name) {
             ret += 1;
         }
     });
     return ret;
 }
 
-function buildGamesObject(waitingQueue){
+function buildGamesObject(waitingQueue) {
     var names = gamesInfo.gameNames;
     var list = [];
-    names.forEach(function(name){
-        list.push({gameName:name,numOfLobbies:50});//countOpenGamesForName(name,waitingQueue)});
+    names.forEach(function (name) {
+        list.push({gameName: name, numOfLobbies: 50});//countOpenGamesForName(name,waitingQueue)});
     });
-    return {msg:"games",object: list};
+    return {msg: "games", object: list};
 
 }
 
-MatchMaker.prototype.addConnection = function(socket){
+MatchMaker.prototype.addUser = function (socket) {
 
 };
 

@@ -13,12 +13,7 @@ function getNames(){
     return ret;
 }
 
-function getGamesListMessage(){
-    return "Games:["+gameNames+"]";
-}
-
 module.exports = {
     gameList: gameList,
-    gameNames: gameNames,
-    getGamesListMessage: getGamesListMessage
+    gameNames: gameNames
 };

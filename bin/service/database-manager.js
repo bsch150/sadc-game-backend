@@ -13,9 +13,9 @@ var MongoClient = require('mongodb').MongoClient
 var config = require('../config');
 
 var DatabaseManager = {
-    connect: function(){
+    connect: function () {
         // Use connect method to connect to the server
-        MongoClient.connect(config.dbURL, function(err, db) {
+        MongoClient.connect(config.dbURL, function (err, db) {
             assert.equal(null, err);
             console.log("Connected successfully to server");
 

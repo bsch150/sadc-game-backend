@@ -1,23 +1,25 @@
-function GameServer(){
+function GameServer() {
     var fs = require('fs');
     var MatchMaker = require('./service/matchmaker.js');
-    var gameList = require("./service/game-list.js");
+    var GameList = require("./service/game-list.js");
     var config = require('./config');
     var matchMaker = new MatchMaker();
     var User = require("./model/user.js");
+    var SocketMessenger = require("./service/socket-messenger.js");
 
     var httpServ = (config.sslEnabled) ? require('https') : require('http');
 
-    function reactToConnection(wsConnect){
-        matchMaker.addConnection(new User(wsConnect));
+    function reactToConnection(wsConnect) {
+        matchMaker.addUser(new User(wsConnect));
+        SocketMessenger.sendGameList(wsConnect, GameList.gameNames);
     }
 
-    function processRequest(req,res){
+    function processRequest(req, res) {
         res.writeHead(200);
         res.end("what?");
     }
 
-    function createWebSocketServer(){
+    function createWebSocketServer() {
         var WebSocketServer = require('ws').Server;
         var app = null;
         if (config.sslEnabled) {
@@ -38,11 +40,12 @@ function GameServer(){
         return new WebSocketServer({server: app});
     }
 
-    function init(){
+    function init() {
         console.log("init");
         var wss = createWebSocketServer();
-        wss.on('connection',reactToConnection);
+        wss.on('connection', reactToConnection);
     }
+
     init();
 }
 
