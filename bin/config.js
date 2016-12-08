@@ -10,4 +10,10 @@ config.sslEnabled = true;
 config.sslKey = './cert/ia.key';
 config.sslCert = './cert/ia.crt';
 
+config.PONG_MAX_NUM_PLAYERS = 2;
+config.PONG_MIN_NUM_PLAYERS = 2;
+
+config.TRON_MAX_NUM_PLAYERS = 4;
+config.TRON_MIN_NUM_PLAYERS = 2;
+
 module.exports = config;

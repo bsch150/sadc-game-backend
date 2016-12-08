@@ -1,47 +1,41 @@
-var Match = require("../model/match.js");
 var gamesInfo = require("./game-list.js");
 var Registry = require("./socket-register.js");
 var User = require("../model/user.js");
+var Lobby = require("../model/lobby.js");
 
 function MatchMaker() {
-    this.connectedUsers = [];
-    this.waitingQueue = [];
+    this.lobbyPool = [];
+    this.playerPool = [];
 }
 
-function chooseGame(response) {
-    console.log("choose game called with " + response);
+function getLobbies() {
+    //TODO: build object that contains open lobbies by gameType
 }
 
-function sendGames(socket, waitingQueue) {
-    var before = buildGamesObject(waitingQueue);
-    console.log("before: " + before);
-    var obj = JSON.stringify(buildGamesObject(waitingQueue));
-    console.log("sending " + obj);
-    socket.send(obj);
-}
-
-function countOpenGamesForName(name, waitingQueue) {
-    var ret = 0;
-    waitingQueue.forEach(function (elem) {
-        if (elem.getGameType() === name) {
-            ret += 1;
+MatchMaker.prototype.addToPlayerPool = function (player) {
+    this.playerPool.forEach(function(playerInPool){
+        if(playerInPool.getUserName() == player.getUserName()) {
+            return false;
         }
     });
-    return ret;
-}
+    this.playerPool.push(player);
+    return true;
+};
 
-function buildGamesObject(waitingQueue) {
-    var names = gamesInfo.gameNames;
-    var list = [];
-    names.forEach(function (name) {
-        list.push({gameName: name, numOfLobbies: 50});//countOpenGamesForName(name,waitingQueue)});
+MatchMaker.prototype.joinGame = function (user, gameSelection) {
+    var matchFound = false;
+    this.lobbyPool.forEach(function (lobby) {
+        if (lobby.gameType === gameSelection) {
+            user.getUserSocket().send("Found another player! Joining lobby.");
+            lobby.addPlayer(user);
+            matchFound = true;
+            //TODO: send message to both players
+        }
     });
-    return {msg: "games", object: list};
-
-}
-
-MatchMaker.prototype.addUser = function (socket) {
-
+    if (!matchFound) {
+        user.getUserSocket().send("Could not find another player. Creating new lobby.");
+        this.lobbyPool.push(new Lobby(user, gameSelection))
+    }
 };
 
 module.exports = MatchMaker;

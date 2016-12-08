@@ -11,10 +11,17 @@
         var socket = new WebSocket(address, {rejectUnauthorized: false});
         socket.onopen = function () {
             socket.send(JSON.stringify({msg: "username", object: "testUSer"}));
+
+            //setTimeout(null, 1000);
+            var gameRequest = {
+                msg: "gameSelection",
+                object: "Tron"
+            };
+            socket.send(JSON.stringify(gameRequest));
         };
 
         socket.on("message", function (arg) {
-            console.log(arg);
+            console.log("Server: " + arg);
         });
     }
 
