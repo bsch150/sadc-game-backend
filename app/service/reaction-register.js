@@ -42,6 +42,7 @@ ReactionRegister.prototype.addReaction = function (reaction) {
     this.reactions.push(reaction);
     setSocketListener(this.socket, this.reactions);
 };
+
 ReactionRegister.prototype.removeReactionByMsg = function(string){
     this.reactions = this.reactions.filter(function(reaction){
         return reaction.msg !== string;
