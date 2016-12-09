@@ -1,10 +1,11 @@
 var Config = require("../config");
 var sender = require("../service/socket-messenger.js");
 
-function Lobby(user, gameSelection) {
+function Lobby(user, gameSelection, _isPublic) {
     this.players = [];
     this.players.push(user);
     this.gameType = gameSelection;
+    this.isPublic = _isPublic;
     this.getObject = function(){
         var playerStringArr = [];
         this.players.forEach(function(player){
