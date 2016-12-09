@@ -6,7 +6,8 @@ var sender = require("./socket-messenger.js");
 var manager = require("./running-games-manager.js");
 
 function MatchMaker() {
-    this.lobbyPool = [];
+    this.publicLobbyPool = [];
+    this.privateLobbyPool = [];
     this.playerPool = [];
 }
 
@@ -15,8 +16,8 @@ function getLobbies() {
 }
 
 MatchMaker.prototype.addToPlayerPool = function (player) {
-    this.playerPool.forEach(function(playerInPool){
-        if(playerInPool.getUserName() == player.getUserName()) {
+    this.playerPool.forEach(function (playerInPool) {
+        if (playerInPool.getUserName() == player.getUserName()) {
             return false;
         }
     });
@@ -24,32 +25,42 @@ MatchMaker.prototype.addToPlayerPool = function (player) {
     return true;
 };
 
-MatchMaker.prototype.joinGame = function (user, gameSelection, isPublic) {
+MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPublic) {
     var matchFound = false;
     var match;
-    this.lobbyPool.forEach(function (lobby) {
-        if (lobby.gameType === gameSelection) {
-            user.getUserSocket().send("Found another player! Joining lobby.");
-            lobby.addPlayer(user);
-            matchFound = true;
 
-            lobby.sendLobbyMessage();
-            manager.push(lobby);
-            match = lobby;
+    if (isPublic) {
+        //TODO: CLEAN THIS UP!!!
+        this.publicLobbyPool.forEach(function (lobby) {
+            if (lobby.gameType === gameSelection) {
+                user.getUserSocket().send("Found another player! Joining lobby.");
+                lobby.addPlayer(user);
+                matchFound = true;
+
+                lobby.sendLobbyMessage();
+                manager.push(lobby);
+                match = lobby;
+            }
+        });
+        if (!matchFound) {
+            user.getUserSocket().send("Could not find another player. Creating new lobby.");
+            var newLobby = new Lobby(user, gameSelection);
+            this.publicLobbyPool.push(newLobby);
+
+            sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
+        } else {
+            this.publicLobbyPool = this.publicLobbyPool.filter(function (lobby) {
+                return (lobby !== match) || !lobby.isFull();
+            })
         }
-    });
-    if (!matchFound) {
-        user.getUserSocket().send("Could not find another player. Creating new lobby.");
-        //TODO: get lobby type from user and pass into Lobby constructor below
-        var newLobby = new Lobby(user, gameSelection);
-        this.lobbyPool.push(newLobby);
-
-        sender.sendPayload(user.getUserSocket(),"lobby",newLobby.getObject());
-    }else{
-        this.lobbyPool = this.lobbyPool.filter(function(lobby){
-            return (lobby !== match) || !lobby.isFull();
-        })
     }
+    else {
+        var newLobby = new Lobby(user, gameSelection);
+        sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
+        this.privateLobbyPool.push(newLobby);
+    }
+
+
 };
 
 module.exports = MatchMaker;

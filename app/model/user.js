@@ -43,7 +43,7 @@ function User(socket, matchMaker) {
         var gameSelectionReaction = {
             msg: "gameSelection",
             reactFunction: function (gameSelection) {
-                matchMaker.joinGame(userReference, gameSelection.gameName);
+                matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.public);
                 if (!lobby) {
                     throw new LobbyNullException();
                 }
