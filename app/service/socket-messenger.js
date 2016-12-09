@@ -1,7 +1,12 @@
 var SocketMessenger = {
     sendGameList: sendGameList,
-    sendPlayerSearchResult: sendPlayerSearchResult
+    sendPlayerSearchResult: sendPlayerSearchResult,
+    sendPayload:sendPayload
 };
+
+function sendPayload(socket,message,object){
+    sendMessage(socket, buildPayload(message,object));
+}
 
 function sendMessage(socket, message) {
     socket.send(message);
