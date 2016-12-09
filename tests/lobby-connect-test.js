@@ -4,19 +4,19 @@
 var FakeClient = require("./fake-client.js");
 var helper = require("./testing-helper.js");
 
-(function (){
+(function () {
     var first = new FakeClient("one");
     var second = new FakeClient("two");
 
-    helper.quickChooseGame(first,"Pong");
-    setTimeout(function(){
-        helper.quickChooseGame(second,"Pong");
-    },400)
+    helper.quickChooseGame(first, "Pong", false);
+    setTimeout(function () {
+        helper.quickChooseGame(second, "Pong", false);
+    }, 400);
 
-    setTimeout(function(){
+    setTimeout(function () {
         first.sendChat("Test one");
-    },800);
-    setTimeout(function(){
+    }, 800);
+    setTimeout(function () {
         second.sendChat("Test two");
-    },1200);
+    }, 1200);
 }());
