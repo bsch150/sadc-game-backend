@@ -1,33 +1,32 @@
-(function () {
-    var WebSocket = require('ws');
+var WebSocket = require('ws');
+var helper = require("./testing-helper.js");
+var config = require("./testing-config.js")
 
-    var port = 443;
-    var local = "wss://172.19.23.46:" + port;
-    var remote = "wss://45.33.28.57:" + port;
+function FakeClient(name) {
+    var name = name;
+    var socket = helper.getSocket(config.address, {rejectUnauthorized: false});
+    helper.printAllMessages(socket);
 
-    var address = local;
+    this.getSocket = function(){return socket;}
+    this.getName = function(){return name;}
+}
 
-    function connect() {
-        var socket = new WebSocket(address, {rejectUnauthorized: false});
-        socket.onopen = function () {
-            console.log("Sending username");
-            socket.send(JSON.stringify({msg: "username", object: "testUSer"}));
-
-            //setTimeout(null, 1000);
-            var gameRequest = {
-                msg: "gameSelection",
-                object: "Tron"
-            };
-            console.log("sending selection");
-            socket.send(JSON.stringify(gameRequest));
-        };
-
-        socket.on("message", function (arg) {
-            console.log("Server: " + arg);
-        });
+FakeClient.prototype.connect = function(){
+    this.getSocket().onopen = function () {
+        console.log("open!");
     }
+};
 
-    connect();
+FakeClient.prototype.sendUsername = function(){
+    helper.sendUsername(this.getSocket(),this.getName());
+};
 
+FakeClient.prototype.chooseGame = function(game){
+    helper.sendGameSelect(this.getSocket(),game);
+};
 
-}());
+FakeClient.prototype.sendChat = function(message){
+    helper.sendChat(this.getSocket(),message);
+}
+
+module.exports = FakeClient;

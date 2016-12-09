@@ -29,6 +29,15 @@ var helper = {
             msg: "lobbyChat",
             object: message
         }));
+    },
+    quickChooseGame: function(client,gameName){
+        client.connect();
+        setTimeout(function(){
+            client.sendUsername();
+            setTimeout(function(){
+                client.chooseGame(gameName);
+            },100);
+        },100);
     }
 };
 
