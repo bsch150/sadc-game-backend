@@ -1,16 +1,20 @@
+var config = require('./config');
+var fs = require('fs');
+var httpServ = (config.sslEnabled) ? require('https') : require('http');
+var GameList = require("./service/game-list.js");
+var MatchMaker = require('./service/matchmaker.js');
+var User = require("./model/user.js");
+var SocketMessenger = require("./service/socket-messenger.js");
+
 function GameServer() {
-    var config = require('./config');
-
-    var fs = require('fs');
-    var httpServ = (config.sslEnabled) ? require('https') : require('http');
-
-    var GameList = require("./service/game-list.js");
-
-    var MatchMaker = require('./service/matchmaker.js');
     var matchMaker = new MatchMaker();
 
-    var User = require("./model/user.js");
-    var SocketMessenger = require("./service/socket-messenger.js");
+
+    function init() {
+        console.log("init");
+        var wss = createWebSocketServer();
+        wss.on('connection', reactToConnection);
+    }
 
     function reactToConnection(wsConnect) {
         matchMaker.addToPlayerPool(new User(wsConnect, matchMaker));
@@ -41,12 +45,6 @@ function GameServer() {
             console.log("Server listening on port: " + config.serverPort);
         }
         return new WebSocketServer({server: app});
-    }
-
-    function init() {
-        console.log("init");
-        var wss = createWebSocketServer();
-        wss.on('connection', reactToConnection);
     }
 
     init();
