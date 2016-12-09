@@ -25,8 +25,8 @@ FakeClient.prototype.sendUsername = function () {
     helper.sendUsername(this.getSocket(), this.getName());
 };
 
-FakeClient.prototype.chooseGame = function (game) {
-    helper.sendGameSelect(this.getSocket(), game);
+FakeClient.prototype.chooseGame = function (game, isPublic) {
+    helper.sendGameSelect(this.getSocket(), game, isPublic);
 };
 
 FakeClient.prototype.sendChat = function (message) {

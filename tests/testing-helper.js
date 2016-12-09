@@ -13,10 +13,13 @@ var helper = {
             object: username
         }));
     },
-    sendGameSelect: function(socket,name){
+    sendGameSelect: function(socket, name, isPublic){
         socket.send(JSON.stringify({
             msg: "gameSelection",
-            object: name
+            object: {
+                gameName: name,
+                public: isPublic
+            }
         }));
     },
     printAllMessages: function(socket){
@@ -30,12 +33,12 @@ var helper = {
             object: message
         }));
     },
-    quickChooseGame: function(client,gameName){
+    quickChooseGame: function(client,gameName, isPublic){
         client.connect();
         setTimeout(function(){
             client.sendUsername();
             setTimeout(function(){
-                client.chooseGame(gameName);
+                client.chooseGame(gameName, isPublic);
             },100);
         },100);
     }

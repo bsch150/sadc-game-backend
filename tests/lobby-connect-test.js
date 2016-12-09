@@ -8,9 +8,9 @@ var helper = require("./testing-helper.js");
     var first = new FakeClient("one");
     var second = new FakeClient("two");
 
-    helper.quickChooseGame(first, "Pong");
+    helper.quickChooseGame(first, "Pong", false);
     setTimeout(function () {
-        helper.quickChooseGame(second, "Pong");
+        helper.quickChooseGame(second, "Pong", false);
     }, 400);
 
     setTimeout(function () {
