@@ -24,7 +24,7 @@ MatchMaker.prototype.addToPlayerPool = function (player) {
     return true;
 };
 
-MatchMaker.prototype.joinGame = function (user, gameSelection) {
+MatchMaker.prototype.joinGame = function (user, gameSelection, isPublic) {
     var matchFound = false;
     var match;
     this.lobbyPool.forEach(function (lobby) {
@@ -32,7 +32,6 @@ MatchMaker.prototype.joinGame = function (user, gameSelection) {
             user.getUserSocket().send("Found another player! Joining lobby.");
             lobby.addPlayer(user);
             matchFound = true;
-            //TODO: send message to both players
 
             lobby.sendLobbyMessage();
             manager.push(lobby);
@@ -41,6 +40,7 @@ MatchMaker.prototype.joinGame = function (user, gameSelection) {
     });
     if (!matchFound) {
         user.getUserSocket().send("Could not find another player. Creating new lobby.");
+        //TODO: get lobby type from user and pass into Lobby constructor below
         var newLobby = new Lobby(user, gameSelection);
         this.lobbyPool.push(newLobby);
 

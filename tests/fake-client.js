@@ -7,26 +7,30 @@ function FakeClient(name) {
     var socket = helper.getSocket(config.address, {rejectUnauthorized: false});
     helper.printAllMessages(socket);
 
-    this.getSocket = function(){return socket;}
-    this.getName = function(){return name;}
+    this.getSocket = function () {
+        return socket;
+    };
+    this.getName = function () {
+        return name;
+    }
 }
 
-FakeClient.prototype.connect = function(){
+FakeClient.prototype.connect = function () {
     this.getSocket().onopen = function () {
         console.log("open!");
     }
 };
 
-FakeClient.prototype.sendUsername = function(){
-    helper.sendUsername(this.getSocket(),this.getName());
+FakeClient.prototype.sendUsername = function () {
+    helper.sendUsername(this.getSocket(), this.getName());
 };
 
-FakeClient.prototype.chooseGame = function(game){
-    helper.sendGameSelect(this.getSocket(),game);
+FakeClient.prototype.chooseGame = function (game) {
+    helper.sendGameSelect(this.getSocket(), game);
 };
 
-FakeClient.prototype.sendChat = function(message){
-    helper.sendChat(this.getSocket(),message);
-}
+FakeClient.prototype.sendChat = function (message) {
+    helper.sendChat(this.getSocket(), message);
+};
 
 module.exports = FakeClient;
