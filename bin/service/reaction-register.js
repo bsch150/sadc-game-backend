@@ -10,26 +10,42 @@ function ReactionRegister(socket) {
 }
 
 function setSocketListener(socket, reactions) {
-    socket.on("message", function (incoming) {
-        incoming = JSON.parse(incoming);
+    function reactToMessage(incoming){
+        try {
+            incoming = JSON.parse(incoming);
+        }catch(err){
+            socket.send(JSON.stringify({
+                msg: "error",
+                object: "The server expects JSON."
+            }))
+        }
         var reacted = false;
         for (var i = 0; i < reactions.length; i++) {
             if (reactions[i].msg === incoming.msg) {
-                Debug.print("incoming object: " + incoming.object);
                 reacted = true;
-                Debug.print("reacting with: " + reactions[i].reactFunction.name);
                 reactions[i].reactFunction(incoming.object);
-            } else {
             }
         }
         if (!reacted) {
-            Debug.print("no reaction was called");
+            socket.send(JSON.stringify({
+                msg:"error",
+                object: "The server didn't expect that."
+            }));
         }
-    });
+    }
+    socket.onmessage = function(event){
+        reactToMessage(event.data);
+    }
 }
 
 ReactionRegister.prototype.addReaction = function (reaction) {
     this.reactions.push(reaction);
+    setSocketListener(this.socket, this.reactions);
+};
+ReactionRegister.prototype.removeReactionByMsg = function(string){
+    this.reactions = this.reactions.filter(function(reaction){
+        return reaction.msg !== string;
+    });
     setSocketListener(this.socket, this.reactions);
 };
 

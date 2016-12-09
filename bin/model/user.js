@@ -9,6 +9,7 @@ function User(socket, matchMaker) {
 
     var userName = null;
     var userSocket = socket;
+    var lobby = null;
 
     this.getUserName = function() {
         return userName;
@@ -35,21 +36,37 @@ function User(socket, matchMaker) {
         reactionRegister.addReaction(usernameReaction);
     }
 
+    function setChatState(){
+        var react = {
+            msg: "lobbyChat",
+            reactFunction: sendChat
+        };
+        reactionRegister.addReaction(react);
+    }
+    function sendChat(msg){
+        if(lobby){
+            lobby.broadcastChat(userName,msg);
+        }
+    }
+
     function setUsername(_username) {
         Debug.print("setting username: " + _username);
+        reactionRegister.removeReactionByMsg("username");
         userName = _username;
     }
 
     function handleGameSelection(gameSelection) {
-        Debug.print("gameSelection reaction function is getting called.")
+        Debug.print("gameSelection reaction function is getting called.");
         matchMaker.joinGame(userReference, gameSelection);
+        reactionRegister.removeReactionByMsg("gameSelection");
+        setChatState();
+
     }
 
-    function addReaction(reaction) {
-        Debug.print("Reaction is getting added to register.");
-        reactionRegister.addReaction(reaction);
-    }
 
+    this.setLobby = function(_lobby){
+        lobby = _lobby;
+    }
 }
 
 User.prototype.getUserName = function () {
@@ -58,6 +75,9 @@ User.prototype.getUserName = function () {
 
 User.prototype.getUserSocket = function () {
     return this.getUserSocket();
+};
+User.prototype.setLobby = function(lobby){
+    this.setLobby(lobby);
 };
 
 
