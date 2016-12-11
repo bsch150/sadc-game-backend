@@ -33,7 +33,6 @@ MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPubl
         //TODO: CLEAN THIS UP!!!
         this.publicLobbyPool.forEach(function (lobby) {
             if (lobby.gameType === gameSelection) {
-                user.getUserSocket().send("Found another player! Joining lobby.");
                 lobby.addPlayer(user);
                 matchFound = true;
                 if(lobby.isFull()){
@@ -43,7 +42,6 @@ MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPubl
             }
         });
         if (!matchFound) {
-            user.getUserSocket().send("Could not find another player. Creating new lobby.");
             var newLobby = new Lobby(user, gameSelection);
             this.publicLobbyPool.push(newLobby);
 
