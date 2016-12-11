@@ -29,7 +29,7 @@ function setSocketListener(socket, reactions) {
         if (!reacted) {
             socket.send(JSON.stringify({
                 msg:"error",
-                object: "The server didn't expect that."
+                object: "The server didn't expect a msg of type " + incoming.msg + "."
             }));
         }
     }

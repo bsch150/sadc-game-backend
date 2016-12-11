@@ -36,9 +36,9 @@ MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPubl
                 user.getUserSocket().send("Found another player! Joining lobby.");
                 lobby.addPlayer(user);
                 matchFound = true;
-
-                lobby.sendLobbyMessage();
-                manager.push(lobby);
+                if(lobby.isFull()){
+                  manager.push(lobby);
+                }
                 match = lobby;
             }
         });
@@ -59,8 +59,19 @@ MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPubl
         sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
         this.privateLobbyPool.push(newLobby);
     }
+};
 
-
+MatchMaker.prototype.searchPrivateLobbiesByUsername = function (username) {
+  var retLobby = null;
+  this.privateLobbyPool.forEach(function(lobby){
+    lobby.players.forEach(function(player){
+      console.log(player.getUserName() + " -> " + username);
+      if(player.getUserName() === username){
+        retLobby = lobby;
+      }
+    });
+  });
+  return retLobby
 };
 
 module.exports = MatchMaker;

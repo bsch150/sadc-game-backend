@@ -47,6 +47,13 @@ var helper = {
                 client.chooseGame(gameName, isPublic);
             },100);
         },100);
+    },
+    executeInOrderWithDelay: function(functions){
+      var delay = 400;
+      functions.forEach(function(func){
+          setTimeout(func,delay);
+          delay += 400;
+      });
     }
 };
 

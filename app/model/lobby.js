@@ -23,6 +23,7 @@ Lobby.prototype.addPlayer = function (otherPlayer) {
     if (!this.isFull()) {
         this.players.push(otherPlayer);
         otherPlayer.setLobby(this);
+        this.sendLobbyMessage();
     }
 };
 

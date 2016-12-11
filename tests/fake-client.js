@@ -45,7 +45,12 @@ FakeClient.prototype.expect = function(strings){
   var name = this.getName();
   this.getSocket().on("message",function(incoming){
     if(incoming != strings[counter]){
-      console.log("Test failed for " + name + ", expected:\n\t" + strings[counter] + "\nrecieved:\n\t" + incoming);
+      console.log("Test failed for " + name + ", expected:\n\t" +
+          strings[counter] +
+        "\nrecieved:\n\t" +
+          incoming +
+        "\n------------------------"
+      );
     }
     counter++;
   })
