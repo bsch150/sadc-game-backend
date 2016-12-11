@@ -33,6 +33,12 @@ var helper = {
             object: message
         }));
     },
+    sendSearchByUsername: function(socket,username){
+      socket.send(JSON.stringify({
+        msg: "playerSearch",
+        object: username
+      }));
+    },
     quickChooseGame: function(client,gameName, isPublic){
         client.connect();
         setTimeout(function(){
