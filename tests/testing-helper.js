@@ -33,6 +33,12 @@ var helper = {
             object: message
         }));
     },
+    sendSearchByUsername: function(socket,username){
+      socket.send(JSON.stringify({
+        msg: "playerSearch",
+        object: username
+      }));
+    },
     quickChooseGame: function(client,gameName, isPublic){
         client.connect();
         setTimeout(function(){
@@ -41,6 +47,13 @@ var helper = {
                 client.chooseGame(gameName, isPublic);
             },100);
         },100);
+    },
+    executeInOrderWithDelay: function(functions){
+      var delay = 400;
+      functions.forEach(function(func){
+          setTimeout(func,delay);
+          delay += 400;
+      });
     }
 };
 

@@ -2,6 +2,7 @@ var ReactionRegister = require("../service/reaction-register.js");
 var Debug = require("../debug.js");
 var LobbyNullException = require("../exceptions/lobby-null.js");
 var LobbyPublicAttributeException = require("../exceptions/lobby-public-attribute");
+var sender = require("../service/socket-messenger.js");
 
 function User(socket, matchMaker) {
     var reactionRegister = new ReactionRegister(socket);
@@ -33,9 +34,29 @@ function User(socket, matchMaker) {
                 userReference.setUsername(username);
                 reactionRegister.removeReactionByMsg("username");
                 expectSelectGame();
+                expectPlayerSearch();
             }
         };
         reactionRegister.addReaction(usernameReaction);
+    }
+
+    function expectPlayerSearch() {
+      console.log("Expecting playerSearch");
+      var playerSearchReaction = {
+        msg: "playerSearch",
+        reactFunction: function (searchName) {
+          var retLobby = matchMaker.searchPrivateLobbiesByUsername(searchName);
+          if(retLobby){
+            retLobby.addPlayer(userReference);
+            reactionRegister.removeReactionByMsg("playerSearch");
+            reactionRegister.removeReactionByMsg("gameSelection");
+            setChatState();
+          }else{
+            sender.sendPayload(userSocket,"error","No available games for that username.");
+          }
+        }
+      };
+      reactionRegister.addReaction(playerSearchReaction);
     }
 
     function expectSelectGame() {
@@ -43,7 +64,7 @@ function User(socket, matchMaker) {
         var gameSelectionReaction = {
             msg: "gameSelection",
             reactFunction: function (gameSelection) {
-                matchMaker.joinGame(userReference, gameSelection.gameName);
+                matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.public);
                 if (!lobby) {
                     throw new LobbyNullException();
                 }
@@ -60,6 +81,7 @@ function User(socket, matchMaker) {
                 }
 
                 reactionRegister.removeReactionByMsg("gameSelection");
+                reactionRegister.removeReactionByMsg("playerSearch");
                 setChatState();
             }
         };
