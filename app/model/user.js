@@ -5,8 +5,9 @@ var LobbyPublicAttributeException = require("../exceptions/lobby-public-attribut
 var sender = require("../service/socket-messenger.js");
 
 function User(socket, matchMaker) {
-    var reactionRegister = new ReactionRegister(socket);
     var userReference = this;
+
+    var reactionRegister = new ReactionRegister(socket);
     var userName = null;
     var userSocket = socket;
     var lobby = null;
@@ -66,6 +67,7 @@ function User(socket, matchMaker) {
             reactFunction: function (gameSelection) {
                 matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.public);
                 if (!lobby) {
+                  console.log("Failed at " + userName);
                     throw new LobbyNullException();
                 }
                 else {

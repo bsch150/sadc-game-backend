@@ -23,7 +23,10 @@ Lobby.prototype.addPlayer = function (otherPlayer) {
     if (!this.isFull()) {
         this.players.push(otherPlayer);
         otherPlayer.setLobby(this);
+        console.log("Set " + otherPlayer.getUserName() + " to a lobby");
         this.sendLobbyMessage();
+    }else{
+      console.log("tried to add to a full lobby");
     }
 };
 

@@ -6,62 +6,48 @@ var sender = require("./socket-messenger.js");
 var manager = require("./running-games-manager.js");
 
 function MatchMaker() {
-    this.publicLobbyPool = [];
-    this.privateLobbyPool = [];
-    this.playerPool = [];
-}
+    var publicLobbyPool = [];
+    var privateLobbyPool = [];
+    var playerPool = [];
 
-function getLobbies() {
-    //TODO: build object that contains open lobbies by gameType
+    this.getPublicLobbyPool = function () {
+      return publicLobbyPool;
+    }
+
+    this.getPlayerPool = function () {
+      return playerPool;
+    }
+    this.getPrivateLobbyPool = function () {
+      return privateLobbyPool;
+    }
 }
 
 MatchMaker.prototype.addToPlayerPool = function (player) {
-    this.playerPool.forEach(function (playerInPool) {
+    this.getPlayerPool().forEach(function (playerInPool) {
         if (playerInPool.getUserName() == player.getUserName()) {
             return false;
         }
     });
-    this.playerPool.push(player);
+    this.getPlayerPool().push(player);
     return true;
 };
 
 MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPublic) {
-    var matchFound = false;
     var match;
 
     if (isPublic) {
-        //TODO: CLEAN THIS UP!!!
-        this.publicLobbyPool.forEach(function (lobby) {
-            if (lobby.gameType === gameSelection) {
-                lobby.addPlayer(user);
-                matchFound = true;
-                if(lobby.isFull()){
-                  manager.push(lobby);
-                }
-                match = lobby;
-            }
-        });
-        if (!matchFound) {
-            var newLobby = new Lobby(user, gameSelection);
-            this.publicLobbyPool.push(newLobby);
-
-            sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
-        } else {
-            this.publicLobbyPool = this.publicLobbyPool.filter(function (lobby) {
-                return (lobby !== match) || !lobby.isFull();
-            })
-        }
+      handlePublicLobbyJoin(this.getPublicLobbyPool(),user,gameSelection);
     }
     else {
         var newLobby = new Lobby(user, gameSelection);
         sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
-        this.privateLobbyPool.push(newLobby);
+        this.getPrivateLobbyPool().push(newLobby);
     }
 };
 
 MatchMaker.prototype.searchPrivateLobbiesByUsername = function (username) {
   var retLobby = null;
-  this.privateLobbyPool.forEach(function(lobby){
+  this.getPrivateLobbyPool().forEach(function(lobby){
     lobby.players.forEach(function(player){
       console.log(player.getUserName() + " -> " + username);
       if(player.getUserName() === username){
@@ -73,3 +59,30 @@ MatchMaker.prototype.searchPrivateLobbiesByUsername = function (username) {
 };
 
 module.exports = MatchMaker;
+
+
+
+function handlePublicLobbyJoin(publicLobbyPool,user,gameSelection){
+  var matchFound = false;
+  console.log("processing " + user.getUserName());
+  publicLobbyPool.forEach(function (lobby) {
+    if (lobby.gameType === gameSelection) {
+      lobby.addPlayer(user);
+      console.log("Added " + user.getUserName() + " to " + lobby.getObject());
+      matchFound = true;
+      if(lobby.isFull()){
+        manager.push(lobby);
+      }
+      match = lobby;
+    }
+  });
+  if (!matchFound) {
+    var newLobby = new Lobby(user, gameSelection);
+    publicLobbyPool.push(newLobby);
+    sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
+  } else {
+    publicLobbyPool= publicLobbyPool.filter(function (lobby) {
+      return (lobby !== match) || !lobby.isFull();
+    })
+  }
+}

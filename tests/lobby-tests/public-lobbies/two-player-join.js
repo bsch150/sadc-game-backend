@@ -1,6 +1,6 @@
 
-var FakeClient = require("../fake-client.js");
-var helper = require("../testing-helper.js");
+var FakeClient = require("../../fake-client.js");
+var helper = require("../../testing-helper.js");
 
 (function(){
   var first = new FakeClient("one");
@@ -8,14 +8,14 @@ var helper = require("../testing-helper.js");
 
   var expectedOne = [
       "{\"msg\":\"games\",\"object\":[\"Pong\",\"Tron\"]}",
-      "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Tron\",\"players\":[\"one\"]}}",
-      "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Tron\",\"players\":[\"one\",\"two\"]}}",
+      "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Pong\",\"players\":[\"one\"]}}",
+      "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Pong\",\"players\":[\"one\",\"two\"]}}",
       "{\"msg\":\"lobbyChat\",\"object\":{\"playerName\":\"one\",\"message\":\"Hello two\"}}",
       "{\"msg\":\"lobbyChat\",\"object\":{\"playerName\":\"two\",\"message\":\"Hello one\"}}"
   ];
   var expectedTwo = [
       "{\"msg\":\"games\",\"object\":[\"Pong\",\"Tron\"]}",
-      "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Tron\",\"players\":[\"one\",\"two\"]}}",
+      "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Pong\",\"players\":[\"one\",\"two\"]}}",
       "{\"msg\":\"lobbyChat\",\"object\":{\"playerName\":\"one\",\"message\":\"Hello two\"}}",
       "{\"msg\":\"lobbyChat\",\"object\":{\"playerName\":\"two\",\"message\":\"Hello one\"}}"
   ];
@@ -24,13 +24,10 @@ var helper = require("../testing-helper.js");
 
   var functions = [
     function () {
-      first.quickChooseGame("Tron",false);
+      first.quickChooseGame("Pong",true);
     },
     function () {
-      second.sendUsername();
-    },
-    function () {
-      second.joinByUsername("one");
+      second.quickChooseGame("Pong",true);
     },
     function () {
       first.sendChat("Hello two");

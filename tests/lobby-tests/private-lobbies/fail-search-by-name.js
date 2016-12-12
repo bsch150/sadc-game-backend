@@ -1,7 +1,7 @@
 
 
-var FakeClient = require("../fake-client.js");
-var helper = require("../testing-helper.js");
+var FakeClient = require("../../fake-client.js");
+var helper = require("../../testing-helper.js");
 
 (function(){
   var first = new FakeClient("one");
