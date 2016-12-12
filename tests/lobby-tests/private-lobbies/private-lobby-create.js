@@ -1,7 +1,7 @@
 /**
  * Created by s730823 on 12/8/2016.
  */
-var FakeClient = require("../fake-client.js");
+var FakeClient = require("../../fake-client.js");
 
 (function () {
     var first = new FakeClient("one");
