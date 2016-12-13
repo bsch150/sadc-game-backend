@@ -13,13 +13,19 @@ var helper = require("../testing-helper.js");
         "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Pong\",\"players\":[\"one\"]}}",
         "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Pong\",\"players\":[\"one\",\"two\"]}}",
         "{\"msg\":\"playerReady\",\"object\":\"one\"}",
-        "{\"msg\":\"playerReady\",\"object\":\"two\"}"
+        "{\"msg\":\"playerReady\",\"object\":\"two\"}",
+        "{\"msg\":\"countdown\",\"object\":\"3\"}",
+        "{\"msg\":\"countdown\",\"object\":\"2\"}",
+        "{\"msg\":\"countdown\",\"object\":\"1\"}"
     ];
     var expectedTwo = [
         "{\"msg\":\"games\",\"object\":[\"Pong\",\"Tron\"]}",
         "{\"msg\":\"lobby\",\"object\":{\"gameType\":\"Pong\",\"players\":[\"one\",\"two\"]}}",
         "{\"msg\":\"playerReady\",\"object\":\"one\"}",
-        "{\"msg\":\"playerReady\",\"object\":\"two\"}"
+        "{\"msg\":\"playerReady\",\"object\":\"two\"}",
+        "{\"msg\":\"countdown\",\"object\":\"3\"}",
+        "{\"msg\":\"countdown\",\"object\":\"2\"}",
+        "{\"msg\":\"countdown\",\"object\":\"1\"}"
     ];
     first.expect(expectedOne);
     second.expect(expectedTwo);
@@ -39,8 +45,6 @@ var helper = require("../testing-helper.js");
         },
         function(){
             console.log("Tests done.");
-            first.close();
-            second.close();
         }
     ];
     helper.executeInOrderWithDelay(functions);

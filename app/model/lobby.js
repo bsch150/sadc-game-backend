@@ -3,9 +3,12 @@ var sender = require("../service/socket-messenger.js");
 var gameInfo = require("../service/game-list.js");
 
 function Lobby(user, gameSelection) {
+    var me = this;
     this.players = [];
     this.players.push(user);
     this.gameType = gameSelection;
+    this.game = null;
+    this.numReady = 0;
     initGameFromSelection(gameSelection);
 
     this.isPublic = true;
@@ -26,9 +29,7 @@ function Lobby(user, gameSelection) {
         gameInfo.gameList.forEach(function(game){
             if(game.getName === selection){
                 var construct = game.getConstructor();
-                console.log("Construct= " +  construct);
-                var game = new construct();
-                console.log(game);
+                me.game = new construct();
             }
         });
     }
@@ -69,9 +70,18 @@ Lobby.prototype.broadcastChat = function (username, message) {
     })
 };
 Lobby.prototype.broadcastReady = function(name){
-  this.players.forEach(function(player){
-      sender.sendPayload(player.getUserSocket(), "playerReady", name);
-  })
+    this.numReady++;
+    this.players.forEach(function(player){
+        sender.sendPayload(player.getUserSocket(), "playerReady", name);
+    });
+    if(this.numReady == this.players.length && this.isFull()){
+        if(this.game){
+            this.game.init(this.players);
+            this.game.begin();
+        }else{
+            console.log("GAME WAS NULL");
+        }
+    }
 };
 
 /* -------------------
