@@ -44,6 +44,7 @@ var helper = require("../testing-helper.js");
             second.sendReadyMessage();
         },
         function(){
+
             console.log("Tests done.");
         }
     ];
