@@ -2,4 +2,11 @@ function TronSocket(){
     this.name = "Tron"
 }
 
-module.exports = TronSocket;
+function getConstructor(){
+    return TronSocket;
+}
+
+module.exports = {
+    getName: "Tron",
+    getConstructor: getConstructor
+};

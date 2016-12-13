@@ -61,7 +61,6 @@ function User(socket, matchMaker) {
     }
 
     function expectSelectGame() {
-        var userProxy = this;
         var gameSelectionReaction = {
             msg: "gameSelection",
             reactFunction: function (gameSelection) {

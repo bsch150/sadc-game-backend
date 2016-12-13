@@ -1,10 +1,13 @@
 var Config = require("../config");
 var sender = require("../service/socket-messenger.js");
+var gameInfo = require("../service/game-list.js");
 
 function Lobby(user, gameSelection) {
     this.players = [];
     this.players.push(user);
     this.gameType = gameSelection;
+    initGameFromSelection(gameSelection);
+
     this.isPublic = true;
     this.getObject = function () {
         var playerStringArr = [];
@@ -17,6 +20,18 @@ function Lobby(user, gameSelection) {
         }
     };
     user.setLobby(this);
+
+
+    function initGameFromSelection(selection){
+        gameInfo.gameList.forEach(function(game){
+            if(game.getName === selection){
+                var construct = game.getConstructor();
+                console.log("Construct= " +  construct);
+                var game = new construct();
+                console.log(game);
+            }
+        });
+    }
 }
 
 Lobby.prototype.addPlayer = function (otherPlayer) {

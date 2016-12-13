@@ -2,4 +2,11 @@ function PongSocket(){
     this.name = "Pong"
 }
 
-module.exports = PongSocket;
+function getConstructor(){
+    return PongSocket;
+}
+
+module.exports = {
+    getName: "Pong",
+    getConstructor: getConstructor
+};
