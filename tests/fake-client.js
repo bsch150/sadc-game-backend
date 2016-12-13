@@ -6,6 +6,10 @@ function FakeClient(name) {
     var name = name;
     var socket = helper.getSocket(config.address, {rejectUnauthorized: false});
 
+    this.exactlyExpected = false;
+    this.expected = [];
+    this.messagesRecieved = 0;
+
     this.getSocket = function () {
         return socket;
     };
@@ -41,27 +45,35 @@ FakeClient.prototype.printAllMessages = function(){
 };
 
 FakeClient.prototype.expect = function(strings){
-  var counter = 0;
-  var name = this.getName();
-  this.getSocket().on("message",function(incoming){
-    if(incoming != strings[counter]){
-      console.log("Test failed for " + name + ", expected:\n\t" +
-          strings[counter] +
-        "\nrecieved:\n\t" +
-          incoming +
-        "\n------------------------"
-      );
-    }
-    counter++;
-  })
-}
+    var name = this.getName();
+    var tempThis = this;
+    this.expected = strings;
+    this.getSocket().on("message",function(incoming){
+        var expected = strings[tempThis.messagesRecieved];
+        if(incoming != expected){
+            console.log("Test failed for " + name + ", expected:\n\t" +
+                (typeof expected == "undefined" ? "nothing" : expected) +
+                "\nrecieved:\n\t" +
+                incoming +
+                "\n------------------------"
+            );
+        }
+        tempThis.messagesRecieved++;
+    })
+};
 
 FakeClient.prototype.close = function () {
-  this.getSocket().close();
+    if(this.messagesRecieved < this.expected.length){
+        console.log(this.getName() + " did not receive enough messages, expected and did not receive: ");
+        for(var i = this.messagesRecieved; i < this.expected.length; i++){
+            console.log("\t"+this.expected[i]);
+        }
+    }
+    this.getSocket().close();
 };
 
 FakeClient.prototype.quickChooseGame = function (gameType, publicBool) {
-  helper.quickChooseGame(this,gameType,publicBool);
+    helper.quickChooseGame(this,gameType,publicBool);
 };
 
 module.exports = FakeClient;
