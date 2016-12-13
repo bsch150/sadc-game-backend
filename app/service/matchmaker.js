@@ -66,13 +66,10 @@ function handlePublicLobbyJoin(publicLobbyPool,user,gameSelection){
   var matchFound = false;
   console.log("processing " + user.getUserName());
   publicLobbyPool.forEach(function (lobby) {
-    if (lobby.gameType === gameSelection) {
+    if (lobby.gameType === gameSelection && !lobby.isFull()) {
       lobby.addPlayer(user);
       console.log("Added " + user.getUserName() + " to " + lobby.getObject());
       matchFound = true;
-      if(lobby.isFull()){
-        manager.push(lobby);
-      }
       match = lobby;
     }
   });
