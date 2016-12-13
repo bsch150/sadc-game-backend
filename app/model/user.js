@@ -14,12 +14,22 @@ function User(socket, matchMaker) {
 
     expectUsername();
 
-    function setChatState() {
-        var react = {
+    function setLobbyState() {
+        var chatReact = {
             msg: "lobbyChat",
             reactFunction: sendChat
         };
-        reactionRegister.addReaction(react);
+        var readyReact = {
+            msg: "playerReady",
+            reactFunction: function(readyName){
+                if(lobby){
+                    lobby.broadcastReady(readyName);
+                }
+            }
+        };
+        reactionRegister.addReaction(chatReact);
+        reactionRegister.addReaction(readyReact);
+
     }
 
     function sendChat(msg) {
@@ -51,7 +61,7 @@ function User(socket, matchMaker) {
             retLobby.addPlayer(userReference);
             reactionRegister.removeReactionByMsg("playerSearch");
             reactionRegister.removeReactionByMsg("gameSelection");
-            setChatState();
+            setLobbyState();
           }else{
             sender.sendPayload(userSocket,"error","No available games for that username.");
           }
@@ -83,7 +93,7 @@ function User(socket, matchMaker) {
 
                 reactionRegister.removeReactionByMsg("gameSelection");
                 reactionRegister.removeReactionByMsg("playerSearch");
-                setChatState();
+                setLobbyState();
             }
         };
 

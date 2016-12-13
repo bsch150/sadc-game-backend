@@ -39,6 +39,9 @@ FakeClient.prototype.sendChat = function (message) {
 FakeClient.prototype.joinByUsername = function (username) {
   helper.sendSearchByUsername(this.getSocket(),username);
 };
+FakeClient.prototype.sendReadyMessage = function(){
+  helper.sendReadyMessage(this.getSocket(),this.getName());
+};
 
 FakeClient.prototype.printAllMessages = function(){
     helper.printAllMessages(this.getSocket());

@@ -39,6 +39,13 @@ var helper = {
         object: username
       }));
     },
+    sendReadyMessage: function(socket,name){
+        socket.send(JSON.stringify({
+                msg: "playerReady",
+                object: name
+            }
+        ))
+    },
     quickChooseGame: function(client,gameName, isPublic){
         client.connect();
         setTimeout(function(){

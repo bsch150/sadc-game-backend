@@ -68,6 +68,11 @@ Lobby.prototype.broadcastChat = function (username, message) {
         });
     })
 };
+Lobby.prototype.broadcastReady = function(name){
+  this.players.forEach(function(player){
+      sender.sendPayload(player.getUserSocket(), "playerReady", name);
+  })
+};
 
 /* -------------------
  Getters and Setters
