@@ -1,8 +1,12 @@
 var sender = require("../service/socket-messenger.js");
+var Ball = require("./pong-helper/ball.js");
+var Paddle = require("./pong-helper/paddle.js");
 
 function PongSocket(){
     this.callbackFunction = null;
     this.users = null;
+    this.ball = null;
+    this.paddles = [];
 }
 
 function startPong(){
@@ -13,6 +17,11 @@ function startPong(){
 
 PongSocket.prototype.init = function(users){
     this.users = users;
+    this.ball = new Ball();
+    this.paddles = [
+        new Paddle(),
+        new Paddle()
+    ];
 };
 
 PongSocket.prototype.begin = function(){
