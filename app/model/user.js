@@ -115,6 +115,12 @@ function User(socket, matchMaker) {
     this.getUserSocket = function () {
         return userSocket;
     };
+    this.addReaction = function (reaction) {
+        reactionRegister.addReaction(reaction);
+    };
+    this.removeReaction = function(string){
+        reactionRegister.removeReactionByMsg(string);
+    };
 }
 
 User.prototype.getUserName = function () {

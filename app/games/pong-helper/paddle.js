@@ -3,7 +3,10 @@
  */
 
 function Paddle(){
-
+    this.x = 0;
+    this.width = 50;
 }
+
+
 
 module.exports = Paddle;

@@ -16,7 +16,10 @@ var helper = require("../testing-helper.js");
         "{\"msg\":\"playerReady\",\"object\":\"two\"}",
         "{\"msg\":\"countdown\",\"object\":\"3\"}",
         "{\"msg\":\"countdown\",\"object\":\"2\"}",
-        "{\"msg\":\"countdown\",\"object\":\"1\"}"
+        "{\"msg\":\"countdown\",\"object\":\"1\"}",
+        "{\"msg\":\"countdown\",\"object\":\"0\"}",
+        "{\"msg\":\"paddleMove\",\"object\":{\"playerName\":\"one\",\"location\":50}}",
+        "{\"msg\":\"paddleMove\",\"object\":{\"playerName\":\"two\",\"location\":500}}"
     ];
     var expectedTwo = [
         "{\"msg\":\"games\",\"object\":[\"Pong\",\"Tron\"]}",
@@ -25,7 +28,10 @@ var helper = require("../testing-helper.js");
         "{\"msg\":\"playerReady\",\"object\":\"two\"}",
         "{\"msg\":\"countdown\",\"object\":\"3\"}",
         "{\"msg\":\"countdown\",\"object\":\"2\"}",
-        "{\"msg\":\"countdown\",\"object\":\"1\"}"
+        "{\"msg\":\"countdown\",\"object\":\"1\"}",
+        "{\"msg\":\"countdown\",\"object\":\"0\"}",
+        "{\"msg\":\"paddleMove\",\"object\":{\"playerName\":\"one\",\"location\":550}}",
+        "{\"msg\":\"paddleMove\",\"object\":{\"playerName\":\"two\",\"location\":100}}"
     ];
     first.expect(expectedOne);
     second.expect(expectedTwo);
@@ -44,8 +50,24 @@ var helper = require("../testing-helper.js");
             second.sendReadyMessage();
         },
         function(){
-
-            console.log("Tests done.");
+            first.waitForExpectedIndex(8,function(){
+                var functions = [
+                    function() {
+                        first.sendPaddleMessage(50);
+                    },
+                    function(){
+                        second.sendPaddleMessage(100);
+                    },
+                    function(){
+                        first.close();
+                        second.close();
+                    },
+                    function(){
+                        console.log("Tests done.");
+                    }
+                ];
+                helper.executeInOrderWithDelay(functions);
+            });
         }
     ];
     helper.executeInOrderWithDelay(functions);

@@ -46,6 +46,12 @@ var helper = {
             }
         ))
     },
+    sendPaddleMessage: function(socket, x){
+        socket.send(JSON.stringify({
+            msg: "paddleMove",
+            object: x
+        }))
+    },
     quickChooseGame: function(client,gameName, isPublic){
         client.connect();
         setTimeout(function(){
