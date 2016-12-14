@@ -14,7 +14,10 @@ function PongGame(){
 }
 
 function startPong(){
+    function step(){
 
+    }
+    setInterval(step,16);
 }
 
 function broadcastPaddleMovement(users, paddle, name, width){
