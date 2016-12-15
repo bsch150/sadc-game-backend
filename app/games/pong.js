@@ -1,6 +1,7 @@
 var sender = require("../service/socket-messenger.js");
 var Ball = require("./pong-helper/ball.js");
 var Paddle = require("./pong-helper/paddle.js");
+var out = new (require("../debug.js"))(0);
 
 
 function PongGame(){
@@ -17,10 +18,15 @@ function startPong(ball,users){
     function step(){
         ball.update();
         users.forEach(function(user){
-            sender.sendPayload(user.getUserSocket(), "ballMove", {
-                x: ball.x,
-                y: ball.y
-            });
+            try {
+                sender.sendPayload(user.getUserSocket(), "ballMove", {
+                    x: ball.x,
+                    y: ball.y
+                });
+            }
+            catch (err){
+                out.log("Error " + err,0);
+            }
         });
     }
     setInterval(step,16);

@@ -1,5 +1,5 @@
 var ReactionRegister = require("../service/reaction-register.js");
-var Debug = require("../debug.js");
+var out = new (require("../debug.js"))(3);
 var LobbyNullException = require("../exceptions/lobby-null.js");
 var LobbyPublicAttributeException = require("../exceptions/lobby-public-attribute");
 var sender = require("../service/socket-messenger.js");
@@ -52,7 +52,7 @@ function User(socket, matchMaker) {
     }
 
     function expectPlayerSearch() {
-      console.log("Expecting playerSearch");
+      out.log(userName + " expecting playerSearch",3);
       var playerSearchReaction = {
         msg: "playerSearch",
         reactFunction: function (searchName) {
@@ -71,6 +71,7 @@ function User(socket, matchMaker) {
     }
 
     function expectSelectGame() {
+        out.log(userName + " expecting select game",3);
         var gameSelectionReaction = {
             msg: "gameSelection",
             reactFunction: function (gameSelection) {

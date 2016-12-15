@@ -4,6 +4,7 @@ var User = require("../model/user.js");
 var Lobby = require("../model/lobby.js");
 var sender = require("./socket-messenger.js");
 var manager = require("./running-games-manager.js");
+var out = new (require("../debug.js"))(3);
 
 function MatchMaker() {
     var publicLobbyPool = [];
@@ -12,11 +13,11 @@ function MatchMaker() {
 
     this.getPublicLobbyPool = function () {
       return publicLobbyPool;
-    }
+    };
 
     this.getPlayerPool = function () {
       return playerPool;
-    }
+    };
     this.getPrivateLobbyPool = function () {
       return privateLobbyPool;
     }
@@ -63,23 +64,25 @@ module.exports = MatchMaker;
 
 
 function handlePublicLobbyJoin(publicLobbyPool,user,gameSelection){
-  var matchFound = false;
-  console.log("processing " + user.getUserName());
-  publicLobbyPool.forEach(function (lobby) {
-    if (lobby.gameType === gameSelection && !lobby.isFull()) {
-      lobby.addPlayer(user);
-      console.log("Added " + user.getUserName() + " to " + lobby.getObject());
-      matchFound = true;
-      match = lobby;
+    var matchFound = false;
+    out.log("processing " + user.getUserName(),3);
+    publicLobbyPool.forEach(function (lobby) {
+        if (lobby.gameType === gameSelection && !lobby.isFull()) {
+            out.log("Match found for " + user.getUserName(),3);
+            lobby.addPlayer(user);
+            console.log("Added " + user.getUserName() + " to " + lobby.getObject());
+            matchFound = true;
+            match = lobby;
+        }
+    });
+    if (!matchFound) {
+        out.log("Match not found for " + user.getUserName(),3);
+        var newLobby = new Lobby(user, gameSelection);
+        publicLobbyPool.push(newLobby);
+        sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
+    } else {
+        publicLobbyPool= publicLobbyPool.filter(function (lobby) {
+            return (lobby !== match) || !lobby.isFull();
+        })
     }
-  });
-  if (!matchFound) {
-    var newLobby = new Lobby(user, gameSelection);
-    publicLobbyPool.push(newLobby);
-    sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
-  } else {
-    publicLobbyPool= publicLobbyPool.filter(function (lobby) {
-      return (lobby !== match) || !lobby.isFull();
-    })
-  }
 }

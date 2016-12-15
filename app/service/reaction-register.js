@@ -24,8 +24,13 @@ function setSocketListener(socket, reactions) {
         for (var i = 0; i < reactions.length; i++) {
             if (reactions[i].msg === incoming.msg) {
                 reacted = true;
-                out.log("Reacting to a [" + incoming.msg + " with ["+reactions[i].reactFunction.name+"]",3);
-                reactions[i].reactFunction(incoming.object);
+                out.log("Reacting to a [" + incoming.msg + "] with ["+reactions[i].reactFunction.name+"]",3);
+                try {
+                    reactions[i].reactFunction(incoming.object);
+                }
+                catch(err){
+                    out.log(err,0);
+                }
             }
         }
         if (!reacted) {
