@@ -23,6 +23,12 @@ var helper = require("../testing-helper.js");
         function(){
             client.sendChat("Hello again 3");
         },
+        function(){
+            client.sendReadyMessage();
+        },
+        function(){
+
+        }
     ];
     helper.printAllMessages(client.getSocket());
     helper.executeInOrderWithDelay(functions);

@@ -76,19 +76,22 @@ PongGame.prototype.init = function(users){
 PongGame.prototype.begin = function(){
     var tempThis = this;
     this.users.forEach(function(user) {
-        setTimeout(function () {
-            sender.sendPayload(user.getUserSocket(), "countdown", "3");
+        setTimeout(function() {
+            sender.sendPayload(user.getUserSocket(),"allReady", "");
             setTimeout(function () {
-                sender.sendPayload(user.getUserSocket(), "countdown", "2");
+                sender.sendPayload(user.getUserSocket(), "countdown", "3");
                 setTimeout(function () {
-                    sender.sendPayload(user.getUserSocket(), "countdown", "1");
-                    setTimeout(function(){
-                        sender.sendPayload(user.getUserSocket(), "countdown", "0");
-                        startPong(tempThis.ball,tempThis.users);
-                    },1000);
+                    sender.sendPayload(user.getUserSocket(), "countdown", "2");
+                    setTimeout(function () {
+                        sender.sendPayload(user.getUserSocket(), "countdown", "1");
+                        setTimeout(function () {
+                            sender.sendPayload(user.getUserSocket(), "countdown", "0");
+                            startPong(tempThis.ball, tempThis.users);
+                        }, 1000);
+                    }, 1000);
                 }, 1000);
             }, 1000);
-        }, 1000);
+        },5000);
     });
 };
 

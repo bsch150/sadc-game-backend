@@ -74,17 +74,18 @@ function User(socket, matchMaker) {
         out.log(userName + " expecting select game",3);
         var gameSelectionReaction = {
             msg: "gameSelection",
-            reactFunction: function (gameSelection) {
-                matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.public);
+            reactFunction: function (gameSelection){
+                out.log("gameSelection " + typeof gameSelection,3);
+                matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.isPublic);
                 if (!lobby) {
-                  console.log("Failed at " + userName);
+                  out.log("Failed at " + userName,0);
                     throw new LobbyNullException();
                 }
                 else {
-                    if (gameSelection.public) {
+                    if (gameSelection.isPublic) {
                         lobby.makePublic();
                     }
-                    else if (!gameSelection.public) {
+                    else if (!gameSelection.isPublic) {
                         lobby.makePrivate();
                     }
                     else {

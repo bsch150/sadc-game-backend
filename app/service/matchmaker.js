@@ -36,10 +36,13 @@ MatchMaker.prototype.addToPlayerPool = function (player) {
 MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPublic) {
     var match;
 
+    out.log("isPublic = " + isPublic + " and type " + typeof isPublic,3);
+
     if (isPublic) {
       handlePublicLobbyJoin(this.getPublicLobbyPool(),user,gameSelection);
     }
     else {
+        out.log("Creating private lobby for " + user.getUserName(),3);
         var newLobby = new Lobby(user, gameSelection);
         sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
         this.getPrivateLobbyPool().push(newLobby);
