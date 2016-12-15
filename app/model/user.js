@@ -1,5 +1,5 @@
 var ReactionRegister = require("../service/reaction-register.js");
-var Debug = require("../debug.js");
+var out = new (require("../debug.js"))(3);
 var LobbyNullException = require("../exceptions/lobby-null.js");
 var LobbyPublicAttributeException = require("../exceptions/lobby-public-attribute");
 var sender = require("../service/socket-messenger.js");
@@ -14,12 +14,22 @@ function User(socket, matchMaker) {
 
     expectUsername();
 
-    function setChatState() {
-        var react = {
+    function setLobbyState() {
+        var chatReact = {
             msg: "lobbyChat",
             reactFunction: sendChat
         };
-        reactionRegister.addReaction(react);
+        var readyReact = {
+            msg: "playerReady",
+            reactFunction: function(readyName){
+                if(lobby){
+                    lobby.broadcastReady(readyName);
+                }
+            }
+        };
+        reactionRegister.addReaction(chatReact);
+        reactionRegister.addReaction(readyReact);
+
     }
 
     function sendChat(msg) {
@@ -42,7 +52,7 @@ function User(socket, matchMaker) {
     }
 
     function expectPlayerSearch() {
-      console.log("Expecting playerSearch");
+      out.log(userName + " expecting playerSearch",3);
       var playerSearchReaction = {
         msg: "playerSearch",
         reactFunction: function (searchName) {
@@ -51,7 +61,7 @@ function User(socket, matchMaker) {
             retLobby.addPlayer(userReference);
             reactionRegister.removeReactionByMsg("playerSearch");
             reactionRegister.removeReactionByMsg("gameSelection");
-            setChatState();
+            setLobbyState();
           }else{
             sender.sendPayload(userSocket,"error","No available games for that username.");
           }
@@ -61,20 +71,21 @@ function User(socket, matchMaker) {
     }
 
     function expectSelectGame() {
-        var userProxy = this;
+        out.log(userName + " expecting select game",3);
         var gameSelectionReaction = {
             msg: "gameSelection",
-            reactFunction: function (gameSelection) {
-                matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.public);
+            reactFunction: function (gameSelection){
+                out.log("gameSelection " + typeof gameSelection,3);
+                matchMaker.joinLobbyByGameType(userReference, gameSelection.gameName, gameSelection.isPublic);
                 if (!lobby) {
-                  console.log("Failed at " + userName);
+                  out.log("Failed at " + userName,0);
                     throw new LobbyNullException();
                 }
                 else {
-                    if (gameSelection.public) {
+                    if (gameSelection.isPublic) {
                         lobby.makePublic();
                     }
-                    else if (!gameSelection.public) {
+                    else if (!gameSelection.isPublic) {
                         lobby.makePrivate();
                     }
                     else {
@@ -84,7 +95,7 @@ function User(socket, matchMaker) {
 
                 reactionRegister.removeReactionByMsg("gameSelection");
                 reactionRegister.removeReactionByMsg("playerSearch");
-                setChatState();
+                setLobbyState();
             }
         };
 
@@ -105,6 +116,12 @@ function User(socket, matchMaker) {
 
     this.getUserSocket = function () {
         return userSocket;
+    };
+    this.addReaction = function (reaction) {
+        reactionRegister.addReaction(reaction);
+    };
+    this.removeReaction = function(string){
+        reactionRegister.removeReactionByMsg(string);
     };
 }
 

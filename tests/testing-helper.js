@@ -18,7 +18,7 @@ var helper = {
             msg: "gameSelection",
             object: {
                 gameName: name,
-                public: isPublic
+                isPublic: isPublic
             }
         }));
     },
@@ -38,6 +38,19 @@ var helper = {
         msg: "playerSearch",
         object: username
       }));
+    },
+    sendReadyMessage: function(socket,name){
+        socket.send(JSON.stringify({
+                msg: "playerReady",
+                object: name
+            }
+        ))
+    },
+    sendPaddleMessage: function(socket, x){
+        socket.send(JSON.stringify({
+            msg: "paddleMove",
+            object: x
+        }))
     },
     quickChooseGame: function(client,gameName, isPublic){
         client.connect();

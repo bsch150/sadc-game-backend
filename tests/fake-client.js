@@ -9,6 +9,8 @@ function FakeClient(name) {
     this.exactlyExpected = false;
     this.expected = [];
     this.messagesRecieved = 0;
+    this.waitFor = -1;
+    this.waitForCallback = null;
 
     this.getSocket = function () {
         return socket;
@@ -39,6 +41,12 @@ FakeClient.prototype.sendChat = function (message) {
 FakeClient.prototype.joinByUsername = function (username) {
   helper.sendSearchByUsername(this.getSocket(),username);
 };
+FakeClient.prototype.sendReadyMessage = function(){
+  helper.sendReadyMessage(this.getSocket(),this.getName());
+};
+FakeClient.prototype.sendPaddleMessage = function(location){
+  helper.sendPaddleMessage(this.getSocket(),location);
+};
 
 FakeClient.prototype.printAllMessages = function(){
     helper.printAllMessages(this.getSocket());
@@ -58,6 +66,10 @@ FakeClient.prototype.expect = function(strings){
                 "\n------------------------"
             );
         }
+        if(tempThis.messagesRecieved == tempThis.waitFor && tempThis.waitForCallback){
+            tempThis.waitForCallback();
+        }else{
+        }
         tempThis.messagesRecieved++;
     })
 };
@@ -74,6 +86,11 @@ FakeClient.prototype.close = function () {
 
 FakeClient.prototype.quickChooseGame = function (gameType, publicBool) {
     helper.quickChooseGame(this,gameType,publicBool);
+};
+
+FakeClient.prototype.waitForExpectedIndex = function(index,callBack){
+    this.waitFor = index;
+    this.waitForCallback = callBack;
 };
 
 module.exports = FakeClient;
