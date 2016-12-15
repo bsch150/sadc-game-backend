@@ -5,6 +5,7 @@
 function Paddle(){
     this.x = 0;
     this.width = 50;
+    this.height = 10;
 }
 
 

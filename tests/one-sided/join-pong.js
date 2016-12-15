@@ -27,7 +27,19 @@ var helper = require("../testing-helper.js");
             client.sendReadyMessage();
         },
         function(){
-
+            var funcs = [];
+            var x = 0;
+            var slope = 5;
+            for(var i = 0; i < 1000;i++){
+                if(x > 308 || x < 25)slope = -slope;
+                x += slope;
+                funcs.push(function(){
+                    client.sendPaddleMessage(x)
+                });
+            }
+            setTimeout(function(){
+                helper.executeInOrderWithDelay(funcs);
+            },20000);
         }
     ];
     helper.printAllMessages(client.getSocket());

@@ -86,7 +86,9 @@ Lobby.prototype.broadcastReady = function(name){
 };
 Lobby.prototype.disconnect = function(user){
     var before = this.players.length;
-   this.game.disconnect(user);
+    if(this.game) {
+        this.game.disconnect(user);
+    }
     this.players = this.players.filter(function(player){
        return player != user;
     });
