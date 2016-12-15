@@ -78,7 +78,7 @@ Lobby.prototype.broadcastReady = function(name){
     if(this.numReady == this.players.length && this.isFull()){
         if(this.game){
             this.game.init(this.players);
-            this.game.begin();
+            this.game.countdownAndStart();
         }else{
             console.log("GAME WAS NULL");
         }

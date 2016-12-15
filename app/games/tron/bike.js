@@ -38,7 +38,7 @@ function Bike(user, startX, startY, startDirection,
                 break;
             case "left":
                 if (this.location.getX() > 0) {
-                    this.location = new Location(this.location.getX()-1, this.location.getY());
+                    this.location = new Location(this.location.getX() - 1, this.location.getY());
                     return true;
                 } else {
                     return false;
@@ -46,7 +46,7 @@ function Bike(user, startX, startY, startDirection,
                 break;
             case "right":
                 if (this.location.getX() < numHorizontalCells) {
-                    this.location = new Location(this.location.getX()+1, this.location.getY());
+                    this.location = new Location(this.location.getX() + 1, this.location.getY());
                     return true;
                 } else {
                     return false;
@@ -74,6 +74,14 @@ Bike.prototype.changeDirection = function (newDirection) {
             throw new invalidTronDirection();
             break;
     }
+};
+
+Bike.prototype.getLocation = function () {
+    return this.location;
+};
+
+Bike.prototype.getUserName = function () {
+    return this.userName;
 };
 
 module.exports = Bike;

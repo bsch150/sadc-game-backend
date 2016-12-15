@@ -12,14 +12,14 @@ function MatchMaker() {
     var playerPool = [];
 
     this.getPublicLobbyPool = function () {
-      return publicLobbyPool;
+        return publicLobbyPool;
     };
 
     this.getPlayerPool = function () {
-      return playerPool;
+        return playerPool;
     };
     this.getPrivateLobbyPool = function () {
-      return privateLobbyPool;
+        return privateLobbyPool;
     }
 }
 
@@ -36,13 +36,13 @@ MatchMaker.prototype.addToPlayerPool = function (player) {
 MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPublic) {
     var match;
 
-    out.log("isPublic = " + isPublic + " and type " + typeof isPublic,3);
+    out.log("isPublic = " + isPublic + " and type " + typeof isPublic, 3);
 
     if (isPublic) {
-      handlePublicLobbyJoin(this.getPublicLobbyPool(),user,gameSelection);
+        handlePublicLobbyJoin(this.getPublicLobbyPool(), user, gameSelection);
     }
     else {
-        out.log("Creating private lobby for " + user.getUserName(),3);
+        out.log("Creating private lobby for " + user.getUserName(), 3);
         var newLobby = new Lobby(user, gameSelection);
         sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
         this.getPrivateLobbyPool().push(newLobby);
@@ -50,28 +50,27 @@ MatchMaker.prototype.joinLobbyByGameType = function (user, gameSelection, isPubl
 };
 
 MatchMaker.prototype.searchPrivateLobbiesByUsername = function (username) {
-  var retLobby = null;
-  this.getPrivateLobbyPool().forEach(function(lobby){
-    lobby.players.forEach(function(player){
-      console.log(player.getUserName() + " -> " + username);
-      if(player.getUserName() === username){
-        retLobby = lobby;
-      }
+    var retLobby = null;
+    this.getPrivateLobbyPool().forEach(function (lobby) {
+        lobby.players.forEach(function (player) {
+            console.log(player.getUserName() + " -> " + username);
+            if (player.getUserName() === username) {
+                retLobby = lobby;
+            }
+        });
     });
-  });
-  return retLobby
+    return retLobby
 };
 
 module.exports = MatchMaker;
 
 
-
-function handlePublicLobbyJoin(publicLobbyPool,user,gameSelection){
+function handlePublicLobbyJoin(publicLobbyPool, user, gameSelection) {
     var matchFound = false;
-    out.log("processing " + user.getUserName(),3);
+    out.log("processing " + user.getUserName(), 3);
     publicLobbyPool.forEach(function (lobby) {
         if (lobby.gameType === gameSelection && !lobby.isFull()) {
-            out.log("Match found for " + user.getUserName(),3);
+            out.log("Match found for " + user.getUserName(), 3);
             lobby.addPlayer(user);
             console.log("Added " + user.getUserName() + " to " + lobby.getObject());
             matchFound = true;
@@ -79,12 +78,12 @@ function handlePublicLobbyJoin(publicLobbyPool,user,gameSelection){
         }
     });
     if (!matchFound) {
-        out.log("Match not found for " + user.getUserName(),3);
+        out.log("Match not found for " + user.getUserName(), 3);
         var newLobby = new Lobby(user, gameSelection);
         publicLobbyPool.push(newLobby);
         sender.sendPayload(user.getUserSocket(), "lobby", newLobby.getObject());
     } else {
-        publicLobbyPool= publicLobbyPool.filter(function (lobby) {
+        publicLobbyPool = publicLobbyPool.filter(function (lobby) {
             return (lobby !== match) || !lobby.isFull();
         })
     }
