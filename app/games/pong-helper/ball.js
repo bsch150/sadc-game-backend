@@ -11,7 +11,7 @@ function Ball(screenHeight, screeenWidth, paddles){
     this.ballWidth = 10;
 
     this.velocities = [
-        0,0
+        1,1
     ];
 }
 
