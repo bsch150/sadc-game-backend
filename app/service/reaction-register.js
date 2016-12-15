@@ -24,8 +24,18 @@ function setSocketListener(socket, reactions) {
         for (var i = 0; i < reactions.length; i++) {
             if (reactions[i].msg === incoming.msg) {
                 reacted = true;
-                out.log("Reacting to a [" + incoming.msg + " with ["+reactions[i].reactFunction.name+"]",3);
-                reactions[i].reactFunction(incoming.object);
+                out.log("Reacting to a [" + incoming.msg + "] with ["+reactions[i].reactFunction.name+"]",3);
+                try {
+                    var object = typeof incoming.object == 'string' && incoming.object.includes("{") ? JSON.parse(incoming.object) : incoming.object;
+                    reactions[i].reactFunction(object);
+                }
+                catch(err){
+                    socket.send(JSON.stringify({
+                        msg:"error",
+                        object: err
+                    }));
+                    out.log(err,0);
+                }
             }
         }
         if (!reacted) {

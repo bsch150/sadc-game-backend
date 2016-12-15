@@ -18,7 +18,7 @@ var helper = {
             msg: "gameSelection",
             object: {
                 gameName: name,
-                public: isPublic
+                isPublic: isPublic
             }
         }));
     },
