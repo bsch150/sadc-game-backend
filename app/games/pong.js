@@ -17,19 +17,20 @@ function PongGame(){
 function startPong(ball,users){
     function step(){
         ball.update();
-        users.forEach(function(user){
-            try {
+        try {
+            users.forEach(function(user){
                 sender.sendPayload(user.getUserSocket(), "ballMove", {
                     x: ball.x,
                     y: ball.y
                 });
-            }
-            catch (err){
-                out.log("Error " + err,0);
-            }
-        });
+            });
+            setTimeout(step,16);
+        }
+        catch (err){
+            out.log("Error in pong typeof = " + typeof err,0);
+        }
     }
-    setInterval(step,16);
+    step();
 }
 
 function broadcastPaddleMovement(users, paddle, name, width){
@@ -75,24 +76,54 @@ PongGame.prototype.init = function(users){
 
 PongGame.prototype.begin = function(){
     var tempThis = this;
-    this.users.forEach(function(user) {
-        setTimeout(function() {
-            sender.sendPayload(user.getUserSocket(),"allReady", "");
+    this.users.forEach(function (user) {
+        try {
+            sender.sendPayload(user.getUserSocket(), "allReady", "");
+        }catch(err){
+            out.log("Error in pong typeof = " + typeof err,0);
+        }
+        setTimeout(function () {
             setTimeout(function () {
-                sender.sendPayload(user.getUserSocket(), "countdown", "3");
+                try {
+                    sender.sendPayload(user.getUserSocket(), "countdown", "3");
+                }catch(err){
+                    out.log("Error in pong typeof = " + typeof err,0);
+                }
                 setTimeout(function () {
-                    sender.sendPayload(user.getUserSocket(), "countdown", "2");
+                    try {
+                        sender.sendPayload(user.getUserSocket(), "countdown", "2");
+                    }catch(err){
+                        out.log("Error in pong typeof = " + typeof err,0);
+                    }
                     setTimeout(function () {
-                        sender.sendPayload(user.getUserSocket(), "countdown", "1");
+                        try {
+                            sender.sendPayload(user.getUserSocket(), "countdown", "1");
+                        }catch(err){
+                            out.log("Error in pong typeof = " + typeof err,0);
+                        }
                         setTimeout(function () {
-                            sender.sendPayload(user.getUserSocket(), "countdown", "0");
-                            startPong(tempThis.ball, tempThis.users);
+                            try {
+                                sender.sendPayload(user.getUserSocket(), "countdown", "0");
+                                startPong(tempThis.ball, tempThis.users);
+                            }catch(err){
+                                out.log("Error in pong typeof = " + typeof err,0);
+                            }
                         }, 1000);
                     }, 1000);
                 }, 1000);
             }, 1000);
-        },5000);
+        }, 5000);
     });
+};
+
+PongGame.prototype.disconnect = function(user){
+    if(this.users) {
+        var before = this.users.length;
+        this.users = this.users.filter(function (userInList) {
+            return userInList.getUserName() != user.getUserName();
+        });
+        out.log("Lobby removed " + (before - this.users.length) + " players.", 2);
+    }
 };
 
 PongGame.prototype.setFinishCallback = function(callbackFunction){

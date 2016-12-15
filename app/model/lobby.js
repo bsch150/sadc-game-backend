@@ -1,6 +1,7 @@
 var Config = require("../config");
 var sender = require("../service/socket-messenger.js");
 var gameInfo = require("../service/game-list.js");
+var out = new (require("../debug.js"))(3);
 
 function Lobby(user, gameSelection) {
     var me = this;
@@ -82,6 +83,23 @@ Lobby.prototype.broadcastReady = function(name){
             console.log("GAME WAS NULL");
         }
     }
+};
+Lobby.prototype.disconnect = function(user){
+    var before = this.players.length;
+   this.game.disconnect(user);
+    this.players = this.players.filter(function(player){
+       return player != user;
+    });
+    out.log("Lobby removed " + (before - this.players.length) + " players.",2);
+    this.sendLobbyMessage();
+};
+Lobby.prototype.contains = function(name){
+    this.players.forEach(function(player){
+        if(player.getUserName() === name){
+            return true;
+        }
+    });
+    return false;
 };
 
 /* -------------------

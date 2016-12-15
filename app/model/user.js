@@ -10,6 +10,12 @@ function User(socket, matchMaker) {
     var reactionRegister = new ReactionRegister(socket);
     var userName = null;
     var userSocket = socket;
+    userSocket.onclose = function(test){
+        out.log(userName + " disconnected.",3);
+        if(lobby){
+            lobby.disconnect(userReference);
+        }
+    };
     var lobby = null;
 
     expectUsername();
@@ -21,11 +27,7 @@ function User(socket, matchMaker) {
         };
         var readyReact = {
             msg: "playerReady",
-            reactFunction: function(readyName){
-                if(lobby){
-                    lobby.broadcastReady(readyName);
-                }
-            }
+            reactFunction: reactReady
         };
         reactionRegister.addReaction(chatReact);
         reactionRegister.addReaction(readyReact);
@@ -35,6 +37,12 @@ function User(socket, matchMaker) {
     function sendChat(msg) {
         if (lobby) {
             lobby.broadcastChat(userName, msg);
+        }
+    }
+
+    function reactReady(readyName){
+        if(lobby){
+            lobby.broadcastReady(readyName);
         }
     }
 
