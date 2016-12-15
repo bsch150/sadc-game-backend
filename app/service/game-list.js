@@ -1,6 +1,6 @@
 var gameList = [
     require("../games/pong.js"),
-    require("../games/tron.js")
+    require("games/tron/tron.js")
 ];
 var gameNames = getNames();
 
