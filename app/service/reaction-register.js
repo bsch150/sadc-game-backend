@@ -2,7 +2,7 @@
  * Created by s730823 on 12/6/2016.
  */
 
-var Debug = require("../debug.js");
+var out = new (require("../debug.js"))(3);
 
 function ReactionRegister(socket) {
     this.socket = socket;
@@ -14,6 +14,7 @@ function setSocketListener(socket, reactions) {
         try {
             incoming = JSON.parse(incoming);
         }catch(err){
+            out.log("Received non-json.",0);
             socket.send(JSON.stringify({
                 msg: "error",
                 object: "The server expects JSON."
@@ -23,10 +24,12 @@ function setSocketListener(socket, reactions) {
         for (var i = 0; i < reactions.length; i++) {
             if (reactions[i].msg === incoming.msg) {
                 reacted = true;
+                out.log("Reacting to a [" + incoming.msg + " with ["+reactions[i].reactFunction.name+"]",3);
                 reactions[i].reactFunction(incoming.object);
             }
         }
         if (!reacted) {
+            out.log("Got something unexpected: " + incoming.msg,"2");
             socket.send(JSON.stringify({
                 msg:"error",
                 object: "The server didn't expect a msg of type " + incoming.msg + "."

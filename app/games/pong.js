@@ -13,9 +13,15 @@ function PongGame(){
     this.gameHeight = 1600;
 }
 
-function startPong(){
+function startPong(ball,users){
     function step(){
-
+        ball.update();
+        users.forEach(function(user){
+            sender.sendPayload(user.getUserSocket(), "ballMove", {
+                x: ball.x,
+                y: ball.y
+            });
+        });
     }
     setInterval(step,16);
 }
@@ -62,6 +68,7 @@ PongGame.prototype.init = function(users){
 };
 
 PongGame.prototype.begin = function(){
+    var tempThis = this;
     this.users.forEach(function(user) {
         setTimeout(function () {
             sender.sendPayload(user.getUserSocket(), "countdown", "3");
@@ -71,7 +78,7 @@ PongGame.prototype.begin = function(){
                     sender.sendPayload(user.getUserSocket(), "countdown", "1");
                     setTimeout(function(){
                         sender.sendPayload(user.getUserSocket(), "countdown", "0");
-                        startPong();
+                        startPong(tempThis.ball,tempThis.users);
                     },1000);
                 }, 1000);
             }, 1000);
