@@ -4,8 +4,8 @@
 
 function Paddle(){
     this.x = 0;
-    this.width = 50;
-    this.height = 10;
+    this.width = 20;
+    this.height = 5;
 }
 
 

@@ -73,7 +73,7 @@ function handlePublicLobbyJoin(publicLobbyPool,user,gameSelection){
         if (lobby.gameType === gameSelection && !lobby.isFull()) {
             out.log("Match found for " + user.getUserName(),3);
             lobby.addPlayer(user);
-            console.log("Added " + user.getUserName() + " to " + lobby.getObject());
+            console.log("Added " + user.getUserName() + " to " + JSON.stringify(lobby.getObject()));
             matchFound = true;
             match = lobby;
         }

@@ -3,6 +3,7 @@ var out = new (require("../debug.js"))(3);
 var LobbyNullException = require("../exceptions/lobby-null.js");
 var LobbyPublicAttributeException = require("../exceptions/lobby-public-attribute");
 var sender = require("../service/socket-messenger.js");
+var Mapper = require("./user-helper/dimension-mapper.js");
 
 function User(socket, matchMaker) {
     var userReference = this;
@@ -131,6 +132,7 @@ function User(socket, matchMaker) {
     this.removeReaction = function(string){
         reactionRegister.removeReactionByMsg(string);
     };
+    this.mapper = null;
 }
 
 User.prototype.getUserName = function () {
@@ -142,6 +144,9 @@ User.prototype.getUserSocket = function () {
 };
 User.prototype.setLobby = function (lobby) {
     this.setLobby(lobby);
+};
+User.prototype.setScreenSize = function(w,h){
+    this.mapper = new Mapper(w,h);
 };
 
 

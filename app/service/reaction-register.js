@@ -2,7 +2,7 @@
  * Created by s730823 on 12/6/2016.
  */
 
-var out = new (require("../debug.js"))(2);
+var out = new (require("../debug.js"))(0);
 
 function ReactionRegister(socket) {
     this.socket = socket;

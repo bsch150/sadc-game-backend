@@ -39,6 +39,15 @@ var helper = {
         object: username
       }));
     },
+    sendScreenSizeMessage: function(socket,w,h){
+        socket.send(JSON.stringify({
+            msg: "screenSize",
+            object: {
+                width: w,
+                height: h
+            }
+        }))
+    },
     sendReadyMessage: function(socket,name){
         socket.send(JSON.stringify({
                 msg: "playerReady",

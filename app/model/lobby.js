@@ -6,7 +6,6 @@ var out = new (require("../debug.js"))(3);
 function Lobby(user, gameSelection) {
     var me = this;
     this.players = [];
-    this.players.push(user);
     this.gameType = gameSelection;
     this.game = null;
     this.numReady = 0;
@@ -23,8 +22,7 @@ function Lobby(user, gameSelection) {
             players: playerStringArr
         }
     };
-    user.setLobby(this);
-
+    this.addPlayer(user);
 
     function initGameFromSelection(selection){
         gameInfo.gameList.forEach(function(game){
@@ -35,9 +33,24 @@ function Lobby(user, gameSelection) {
         });
     }
 }
+function getUserByName(users,name){
+    for(var i = 0; i < users.length; i++){
+        if(users[i].getUserName() == name){
+            return users[i];
+        }
+    }
+    return null;
+}
 
 Lobby.prototype.addPlayer = function (otherPlayer) {
     if (!this.isFull()) {
+        sender.sendPayload(otherPlayer.getUserSocket(),"requestScreenSize", "");
+        otherPlayer.addReaction({
+            msg: "screenSize",
+            reactFunction: function(object){
+                otherPlayer.setScreenSize(object.width,object.height);
+            }
+        });
         this.players.push(otherPlayer);
         otherPlayer.setLobby(this);
         console.log("Set " + otherPlayer.getUserName() + " to a lobby");
@@ -71,17 +84,22 @@ Lobby.prototype.broadcastChat = function (username, message) {
     })
 };
 Lobby.prototype.broadcastReady = function(name){
-    this.numReady++;
-    this.players.forEach(function(player){
-        sender.sendPayload(player.getUserSocket(), "playerReady", name);
-    });
-    if(this.numReady == this.players.length && this.isFull()){
-        if(this.game){
-            this.game.init(this.players);
-            this.game.begin();
-        }else{
-            console.log("GAME WAS NULL");
+    var user = getUserByName(this.players,name);
+    if(user && user.mapper) {
+        this.numReady++;
+        this.players.forEach(function (player) {
+            sender.sendPayload(player.getUserSocket(), "playerReady", name);
+        });
+        if (this.numReady == this.players.length && this.isFull()) {
+            if (this.game) {
+                this.game.init(this.players);
+                this.game.begin();
+            } else {
+                console.log("GAME WAS NULL");
+            }
         }
+    }else if(user){
+        sender.sendPayload(user.getUserSocket(),"error","You need to tell the server screen size.");
     }
 };
 Lobby.prototype.disconnect = function(user){
@@ -123,5 +141,6 @@ Lobby.prototype.makePrivate = function () {
 Lobby.prototype.makePublic = function () {
     this.isPublic = true;
 };
+
 
 module.exports = Lobby;

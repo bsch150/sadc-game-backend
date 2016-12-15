@@ -41,6 +41,9 @@ FakeClient.prototype.sendChat = function (message) {
 FakeClient.prototype.joinByUsername = function (username) {
   helper.sendSearchByUsername(this.getSocket(),username);
 };
+FakeClient.prototype.sendScreenSizeMessage = function(w,h){
+    helper.sendScreenSizeMessage(this.getSocket(),w,h);
+}
 FakeClient.prototype.sendReadyMessage = function(){
   helper.sendReadyMessage(this.getSocket(),this.getName());
 };

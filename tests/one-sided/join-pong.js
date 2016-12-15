@@ -24,15 +24,21 @@ var helper = require("../testing-helper.js");
             client.sendChat("Hello again 3");
         },
         function(){
+          client.sendScreenSizeMessage(200,300);
+        },
+        function(){
             client.sendReadyMessage();
         },
         function(){
             var funcs = [];
-            var x = 0;
+            var x = 100;
             var slope = 5;
             for(var i = 0; i < 1000;i++){
-                if(x > 308 || x < 25)slope = -slope;
+                if(x > 308 || x < 25){
+                    slope = -slope;
+                }
                 x += slope;
+                console.log("x = " + x);
                 funcs.push(function(){
                     client.sendPaddleMessage(x)
                 });
