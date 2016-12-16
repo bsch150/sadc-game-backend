@@ -5,7 +5,7 @@ var FakeClient = require("../fake-client.js");
 var helper = require("../testing-helper.js");
 
 (function(){
-    var client = new FakeClient("first");
+    var client = new FakeClient("first"+Math.random());
 
     client.getSocket().on("message",function(msg){
         obj = JSON.parse(msg);
@@ -21,7 +21,7 @@ var helper = require("../testing-helper.js");
             client.quickChooseGame("Pong", true);
         },
         function(){
-            client.sendScreenSizeMessage(100,200);
+            client.sendScreenSizeMessage(100*Math.random(),200);
         },
         function () {
             client.sendChat("I am readying soon");

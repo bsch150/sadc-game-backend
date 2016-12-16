@@ -1,7 +1,7 @@
 /**
  * Created by s730823 on 12/14/2016.
  */
-var out = new (require("../../debug.js"))(3);
+var out = new (require("../../debug.js"))(0);
 
 function Ball(screenHeight, screeenWidth, paddles){
     this.gameHeight = screenHeight;
@@ -9,11 +9,25 @@ function Ball(screenHeight, screeenWidth, paddles){
     this.x = screeenWidth / 2;
     this.y = screenHeight / 2;
     this.paddles = paddles;
-    this.ballWidth = 10;
+    this.ballWidth = 2.2;
+    this.updateCounter = 0;
+
+    var initSpeed = 1;
 
     this.velocities = [
-        1,1
+        initSpeed,initSpeed
     ];
+
+    this.makeSpeedFaster = function(){
+        var increase = 1.1;
+        this.velocities[0] *= increase;
+        this.velocities[1] *= increase;
+    }
+    this.resetVelocities = function(){
+        this.velocities = [
+            initSpeed,initSpeed
+        ];
+    }
 }
 
 function shouldBounceWall(x, ballWidth, gameWidth){
@@ -27,13 +41,16 @@ function shouldResetTop(y,ballWidth,gameHeight){
 }
 
 function shouldBounceOffPaddle(x,y,ballWidth,paddle,gameHeight){
-    return ((y - ballWidth < paddle.height && y - ballWidth > 0) ||
-        ((y + ballWidth > gameHeight - paddle.height) && (y + ballWidth < gameHeight))) &&
-        ((x < paddle.x + (paddle.width / 2)) && x > paddle.x - (paddle.width / 2));
+    var distanceY = Math.abs(paddle.y - y);
+
+    var xDist = Math.abs(x - paddle.x);
+    out.log("xDist = " + xDist + " yDist " + distanceY,3);
+    return (distanceY < paddle.height + ballWidth) &&
+        (xDist < paddle.width);
 }
-function inZoneToBounce(){}
 
 Ball.prototype.update = function(){
+    this.updateCounter++;
     this.x += this.velocities[0];
     this.y += this.velocities[1];
     if(shouldBounceWall(this.x,this.ballWidth,this.gameWidth)){
@@ -45,9 +62,11 @@ Ball.prototype.update = function(){
         return "point two";
     }else if(shouldBounceOffPaddle(this.x,this.y,this.ballWidth,this.paddles[0],this.gameHeight)){
         this.velocities[1] = -(this.velocities[1]);
+        this.makeSpeedFaster();
         out.log("ball bounced off player 1",3);
     }else if(shouldBounceOffPaddle(this.x,this.y,this.ballWidth,this.paddles[1],this.gameHeight)){
         this.velocities[1] = -(this.velocities[1]);
+        this.makeSpeedFaster();
         out.log("ball bounced off player 2",3);
     }
     out.log("Ball: " + this.x + ", " + this.y,5);

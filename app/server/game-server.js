@@ -21,7 +21,9 @@ function GameServer() {
     function reactToConnection(wsConnect) {
         out.log("New connection made.", 3);
         matchMaker.addToPlayerPool(new User(wsConnect, matchMaker));
-        SocketMessenger.sendGameList(wsConnect, GameList.gameNames);
+        setTimeout(function() {
+            SocketMessenger.sendGameList(wsConnect, GameList.gameNames);
+        },500);
     }
 }
 

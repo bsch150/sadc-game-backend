@@ -3,7 +3,7 @@ var Ball = require("./pong-helper/ball.js");
 var Paddle = require("./pong-helper/paddle.js");
 var out = new (require("../debug.js"))(3);
 
-var FPS = 20;
+var FPS = 15;
 var NUM_MILLIS_PER_MSG = 1000 / FPS;
 
 function PongGame(){
@@ -13,8 +13,8 @@ function PongGame(){
     this.paddles = [];
     this.score = [0,0];
 
-    this.gameWidth = 200;
-    this.gameHeight = 600;
+    this.gameWidth = 100;
+    this.gameHeight = 100;
 }
 
 function broadcastBall(users, ball, gameHeight,gameWidth){
@@ -32,6 +32,7 @@ function resetBall(users, ball, score,gameHeight,gameWidth){
     out.log("Resetting ball, score is " + score[0] + " to " + score[1],3);
     ball.x = gameWidth / 2;
     ball.y = gameHeight / 2;
+    ball.resetVelocities();
     broadcastBall(users, ball,gameHeight,gameWidth);
     countDownAndCallback(users,function(){
         startPong(ball,users,score,gameHeight,gameWidth);
@@ -112,11 +113,12 @@ function limitPaddle(paddleX,min,max){
 /*----------Begin general game methods--------------*/
 
 PongGame.prototype.init = function(users){
+    out.log("init",3);
     var tempThis = this;
     this.users = users;
     this.paddles = [
-        new Paddle(),
-        new Paddle()
+        new Paddle(this.gameHeight),
+        new Paddle(0)
     ];
     this.ball = new Ball(this.gameHeight, this.gameWidth, this.paddles);
     sender.sendPayload(users[0].getUserSocket(),"gameDimensions",{
@@ -158,6 +160,7 @@ PongGame.prototype.begin = function(){
     var tempThis = this;
     this.users.forEach(function (user) {
         try {
+            out.log("Everyone ready",3)
             sender.sendPayload(user.getUserSocket(), "allReady", "");
         }catch(err){
             out.log("Error in pong: " + err,0);

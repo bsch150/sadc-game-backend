@@ -11,8 +11,8 @@ var helper = require("../testing-helper.js");
     client.getSocket().on("message",function(msg){
        obj = JSON.parse(msg);
         if(obj.msg == "ballMove"){
-            if(left)x += 1;
-            else x -= 1;
+            if(left)x += 5;
+            else x -= 5;
             client.getSocket().send(JSON.stringify({
                 msg:"paddleMove",
                 object: x
@@ -26,7 +26,7 @@ var helper = require("../testing-helper.js");
             client.quickChooseGame("Pong", true);
         },
         function(){
-            client.sendScreenSizeMessage(200,400);
+            client.sendScreenSizeMessage(414,1000);
         },
         function () {
             client.sendChat("I am readying soon");
@@ -39,5 +39,4 @@ var helper = require("../testing-helper.js");
         }
     ];
     helper.executeInOrderWithDelay(functions);
-    helper.printAllMessages(client.getSocket());
 }());
